@@ -39,7 +39,7 @@
                     </li>
                     @if(auth()->user()->role=='Admin')
                     <li @if(isset($invclass)) class="active" @endif>
-                        <a href={!! URL::to("/invite") !!}>Manage CRM users</a>
+                        <a href="{{route('admin.users')}}">Manage CRM users</a>
                     </li>
                     @endif
                     @if(auth()->user()->role=='Admin')
@@ -53,7 +53,7 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loginmenu">Welcome , {!! auth()->user()->username !!} <span class="caret"></span></a>
                         <ul class="dropdown-menu" aria-labelledby="loginmenu">
-                            <li><a href={!! URL::to("/user") !!}>Settings</a></li>
+                            <li><a href="{{route('admin.profile')}}">Settings</a></li>
                             <li>
                                 <form action="{!! URL::to('/logout') !!}" method="post" id='logout'>
                                     @csrf

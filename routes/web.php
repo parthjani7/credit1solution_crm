@@ -5,8 +5,10 @@ use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\SignupController;
+use App\Http\Controllers\UserController;
 use App\Models\Crmadmins;
 use App\Models\NotifSub;
 use Illuminate\Support\Facades\Route;
@@ -254,10 +256,13 @@ Route::middleware(['auth:admin'])->as('admin.')->group(function () {
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
+    Route::get('/users', [UserController::class, 'index'])->name('users');
+
+    Route::get('/profile', ProfileController::class)->name('profile');
+
     Route::get('/options', [CrmController::class, 'options'])->name('options');
-    Route::get('/invite', [CrmController::class, 'invite'])->name('invite');
     Route::get('/agreement', [CrmController::class, 'agreement'])->name('agreement');
-    Route::get('/user', [CrmController::class, 'user'])->name('user');
+
 });
 
 Route::post('signup/payment', array(

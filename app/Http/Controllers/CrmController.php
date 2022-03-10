@@ -21,14 +21,6 @@ class CrmController extends Controller
         return view("crm.dashboard.options")->with("optclass", "set");
     }
 
-    public function invite()
-    {
-        if (auth()->user()->role != 'Admin')
-            return redirect()->route('admin.dashboard');
-
-        return view("crm.dashboard.invite")->with("invclass", "set");
-    }
-
     public function agreement()
     {
         if (auth()->user()->role != 'Admin')
@@ -36,10 +28,7 @@ class CrmController extends Controller
         return view("crm.dashboard.agreement")->with("agreclass", "set");
     }
 
-    public function user()
-    {
-        return view("crm.dashboard.user")->with("invclass", "set");
-    }
+
     public function logout()
     {
         session()->remove("admin");
