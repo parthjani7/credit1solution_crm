@@ -122,8 +122,10 @@ Auth::routes([
     'verify'   => false,  // for email verification
 ]);
 
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/', [LoginController::class, 'login']);
+Route::middleware(['guest:admin'])->group(function () {
+    Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/', [LoginController::class, 'login']);
+});
 
 Route::middleware(['auth:admin'])->as('admin.')->group(function () {
 
@@ -136,7 +138,6 @@ Route::middleware(['auth:admin'])->as('admin.')->group(function () {
     Route::get('/agreements', AgreementController::class)->name('agreements');
 
     Route::get('/options', [CrmController::class, 'options'])->name('options');
-
 });
 
 Route::post('signup/payment', array(
