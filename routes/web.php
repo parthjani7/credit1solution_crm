@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CrmController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\WelcomeController;
@@ -234,7 +235,6 @@ Route::post("/signup", function (Request $request) {
     return redirect()->to("/login");
 });
 
-
 Auth::routes([
     'login'    => true,
     'logout'   => true,
@@ -252,7 +252,8 @@ Route::middleware(['auth:admin'])->as('admin.')->group(function () {
     // Route::get('/passwordreset', [CrmController::class, 'passwordreset'])->name('passwordreset');
     // Route::post('/passwordreset', [CrmController::class, 'doPasswordreset'])->name('doPasswordreset');
 
-    Route::get('/response', [CrmController::class, 'response'])->name('response');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
     Route::get('/options', [CrmController::class, 'options'])->name('options');
     Route::get('/invite', [CrmController::class, 'invite'])->name('invite');
     Route::get('/agreement', [CrmController::class, 'agreement'])->name('agreement');

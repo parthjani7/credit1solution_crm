@@ -14,22 +14,17 @@ use Illuminate\Support\Str;
 class CrmController extends Controller
 {
 
-    public function response()
-    {
-        return view("crm.dashboard.response")->with("resclass", "set");
-    }
-
     public function options()
     {
         if (auth()->user()->role != 'Admin')
-            return redirect()->to("/response");
+            return redirect()->route('admin.dashboard');
         return view("crm.dashboard.options")->with("optclass", "set");
     }
 
     public function invite()
     {
         if (auth()->user()->role != 'Admin')
-            return redirect()->to("/response");
+            return redirect()->route('admin.dashboard');
 
         return view("crm.dashboard.invite")->with("invclass", "set");
     }
@@ -37,7 +32,7 @@ class CrmController extends Controller
     public function agreement()
     {
         if (auth()->user()->role != 'Admin')
-            return redirect()->to("/response");
+            return redirect()->route('admin.dashboard');
         return view("crm.dashboard.agreement")->with("agreclass", "set");
     }
 

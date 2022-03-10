@@ -35,7 +35,7 @@
                     </li>
                     @endif
                     <li @if(isset($resclass)) class="active" @endif>
-                        <a href={!! URL::to("/response") !!}>View Responses</a>
+                        <a href="{{route('admin.dashboard')}}">Dashboard</a>
                     </li>
                     @if(auth()->user()->role=='Admin')
                     <li @if(isset($invclass)) class="active" @endif>

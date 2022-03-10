@@ -71,6 +71,6 @@ class ResetPasswordController extends Controller
 
         Auth::guard('admin')->login($admin);
 
-        return redirect()->to("/response");
+        return redirect()->route('admin.dashboard');
     }
 }
