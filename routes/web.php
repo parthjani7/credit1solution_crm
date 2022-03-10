@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgreementController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\UserController;
 use App\Models\Crmadmins;
@@ -32,8 +32,6 @@ use PayPal\Api\Agreement;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', [WelcomeController::class, 'index']);
 
 Route::get('/step2', [SignupController::class, 'step2']);
 Route::post('/step2', [SignupController::class, 'postSteptwo']);
@@ -132,10 +130,8 @@ Route::get("/genpdf", function (ContractAgreementService $contractAgreementServi
 // $crm->save();
 // });
 
-Route::get('page/{id}', [WelcomeController::class, 'page']);
-
 Auth::routes([
-    'login'    => true,
+    'login'    => false,
     'logout'   => true,
     'register' => true,
     'reset'    => true,   // for resetting passwords
@@ -143,13 +139,10 @@ Auth::routes([
     'verify'   => false,  // for email verification
 ]);
 
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/', [LoginController::class, 'login']);
+
 Route::middleware(['auth:admin'])->as('admin.')->group(function () {
-
-    // Route::get('/forgotpassword', [CrmController::class, 'forgotpassword'])->name('forgotpassword');
-    // Route::post('/forgotpassword', [CrmController::class, 'doForgotpassword'])->name('doForgotpassword');
-
-    // Route::get('/passwordreset', [CrmController::class, 'passwordreset'])->name('passwordreset');
-    // Route::post('/passwordreset', [CrmController::class, 'doPasswordreset'])->name('doPasswordreset');
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
