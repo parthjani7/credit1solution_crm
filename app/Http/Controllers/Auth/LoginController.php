@@ -51,19 +51,6 @@ class LoginController extends Controller
         return view("crm.login");
     }
 
-    protected function authenticated(Request $request, $user)
-    {
-        // if ($user->status == 'blocked') {
-        //     $this->logout($request);
-        //     return redirect()->to("crm/login")->with("errormessage", "This account is blocked. Please contact your admin.");
-        // }
-
-        // if ($user->status != 'active') {
-        //     $this->logout($request);
-        //     return redirect()->to("crm/login")->with("errormessage", "Invalid user. Please register first.");
-        // }
-    }
-
     /**
      * Get the guard to be used during authentication.
      *
