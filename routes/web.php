@@ -113,23 +113,6 @@ Route::get("/genpdf", function (ContractAgreementService $contractAgreementServi
     return $pdf->download("agreement.pdf");
 });
 
-// Route::get("/test",function(){
-// $profiles = Profile::all();
-// 	foreach ($profiles as $profile) {
-// 		$profile->btc = "Morning";
-// 		$profile->in = "Auto Purchase";
-// 		$profile->hau = "Auto Dealer";
-// 		$profile->ml = 0;
-// 		$profile->save();
-// 	}
-// $crm = new Crmadmins;
-// $crm->username = "Test Admin";
-// $crm->email = "test1234@gmail.com";
-// $crm->password = Hash::make("test1234");
-// $crm->user_state = 1;
-// $crm->save();
-// });
-
 Auth::routes([
     'login'    => false,
     'logout'   => true,
