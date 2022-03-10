@@ -907,7 +907,7 @@ public function step2($token=null){
 
 
     protected function returnNotification(){
-        $notification = EmailDetails::where("type","=","notification");
+        $notification = EmailDetails::whereType("notification");
         $responseData = [];
         if($notification->count()!=0){
             $notification = $notification->first();
@@ -926,11 +926,9 @@ public function step2($token=null){
         if($emailSubscribers->count()==0){
             array_push($responseData["email"], "cs@credit1solutions.com") ;
         }else{
-            $emailSubscribers = $emailSubscribers->get()->toArray();
-            foreach ($emailSubscribers as $subs) {
+            foreach ($emailSubscribers->get() as $subs) {
                 array_push($responseData["email"], $subs->email);
             }
-
         }
 
         return $responseData;
