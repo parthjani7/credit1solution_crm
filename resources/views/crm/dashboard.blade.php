@@ -44,7 +44,7 @@
                     @endif
                     @if(auth()->user()->role=='Admin')
                     <li @if(isset($agreclass)) class="active" @endif>
-                        <a href={!! URL::to("/agreement") !!}>Manage Agreement</a>
+                        <a href="{{route('admin.agreements')}}">Manage Agreement</a>
                     </li>
                     @endif
                 </ul>

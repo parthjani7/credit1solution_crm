@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SliderController;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
+use PayPal\Api\Agreement;
 
 /*
 |--------------------------------------------------------------------------
@@ -260,8 +262,9 @@ Route::middleware(['auth:admin'])->as('admin.')->group(function () {
 
     Route::get('/profile', ProfileController::class)->name('profile');
 
+    Route::get('/agreements', AgreementController::class)->name('agreements');
+
     Route::get('/options', [CrmController::class, 'options'])->name('options');
-    Route::get('/agreement', [CrmController::class, 'agreement'])->name('agreement');
 
 });
 
