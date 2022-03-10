@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Credit1Solutions | Dashboard</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-    <link href="{{ asset('/') }}bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/') }}dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/') }}dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
@@ -126,12 +126,14 @@
     <div class='control-sidebar-bg'></div>
 </div>
 
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
 
-<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js" crossorigin="anonymous"></script>
+
 <script src="{{ asset('/') }}bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="{{ asset('/') }}plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src='{{ asset("/") }}plugins/fastclick/fastclick.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js" integrity="sha512-cJMgI2OtiquRH4L9u+WQW+mz828vmdp9ljOcm/vKTQ7+ydQUktrPVewlykMgozPP+NUBbHdeifE6iJ6UVjNw5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js" integrity="sha512-qH+R6YL4/40iiIrnN5aNZ1sEeEalNAdnzP9jfsxFPBdIslTkwUddkSazjVWhJ3f/3Y26QF6aql0xeneuVw0h/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script src="{{ asset('/') }}dist/js/app.min.js" type="text/javascript"></script>
 <script src="{{ asset('/') }}js/angular.js" type="text/javascript"></script>
 <script src="{{ asset('/') }}js/angular/commonFactory.js" type="text/javascript"></script>
