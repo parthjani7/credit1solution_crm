@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Crmadmins;
+
 return [
 
     /*
@@ -40,6 +42,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'crm_admins',
+        ],
     ],
 
     /*
@@ -63,6 +69,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'crm_admins' => [
+            'driver' => 'eloquent',
+            'model' => Crmadmins::class,
         ],
 
         // 'users' => [

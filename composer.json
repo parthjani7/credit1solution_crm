@@ -6,10 +6,19 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "authorizenet/authorizenet": "^2.0",
+        "barryvdh/laravel-dompdf": "^1.0",
+        "doctrine/dbal": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
+        "laravel/cashier": "^13.8",
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.14.1",
-        "laravel/tinker": "^2.7"
+        "laravel/tinker": "^2.7",
+        "laravel/ui": "^3.4",
+        "laravelcollective/html": "^6.3",
+        "maatwebsite/excel": "^3.1",
+        "paypal/rest-api-sdk-php": "^1.14",
+        "psr/simple-cache": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
