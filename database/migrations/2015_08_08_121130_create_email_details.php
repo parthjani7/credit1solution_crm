@@ -16,7 +16,7 @@ class CreateEmailDetails extends Migration {
 			$table->string("type",50);
 			$table->string("subject");
 			$table->text("message");
-			$table->tinyInt("include_data");
+			$table->tinyInteger("include_data");
 			$table->timestamps();
 		});
 	}
