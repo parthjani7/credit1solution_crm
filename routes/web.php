@@ -212,33 +212,6 @@ Route::prefix('/admin')->as('admin.')->group(function () {
 
 Route::get('page/{id}', [WelcomeController::class, 'page']);
 
-Route::get("/signup/{token}", function ($token) {
-    $admin = Crmadmins::where("token", "=", $token);
-    if ($admin->count() == 0)
-        return view("errors.503");
-    $error = session()->get("signuperror", "default");
-    $username = session()->get("user", "");
-    $admin = $admin->first()->toArray();
-    return view("signup", [
-        "admin" => $admin,
-        "error" => $error,
-        "username" => $username,
-    ]);
-});
-
-Route::post("/signup", function (Request $request) {
-    $inputs = $request->all();
-    if ($inputs["password"]  && $inputs["password"] != $inputs["conf_password"])
-        return redirect()->back()->with("signuperror", "Password doesn't match!")->withUser($inputs["username"]);
-    $crm = Crmadmins::where("id", "=", $inputs["id"])->first();
-    $crm->token = NULL;
-    $crm->username = $inputs["username"];
-    $crm->password = Hash::make($inputs["password"]);
-    $crm->status = 'active';
-    $crm->save();
-    return redirect()->to("/login");
-});
-
 Auth::routes([
     'login'    => true,
     'logout'   => true,
