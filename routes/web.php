@@ -44,20 +44,6 @@ Route::post('/step3', [SignupController::class, 'postRegisterStep3']);
 Route::get('/step3', [SignupController::class, 'getRegisterStep3']);
 Route::get("/final", [SignupController::class, 'getFinal']);
 
-Route::get('home', function () {
-    return redirect('admin');
-});
-
-Route::get("/date", function () {
-    return Carbon::now();
-});
-
-Route::get("/test", function () {
-    $notifs = NotifSub::where("included", "=", "1");
-    dd($notifs->count());
-});
-
-
 Route::get("/genpdf", function (ContractAgreementService $contractAgreementService) {
     $input = [
         "step1_fname" => "Courtney",
@@ -145,70 +131,6 @@ Route::get("/genpdf", function (ContractAgreementService $contractAgreementServi
 // $crm->user_state = 1;
 // $crm->save();
 // });
-
-Route::prefix('/admin')->as('admin.')->group(function () {
-
-    Route::get('/', [AdminController::class, 'index']);
-    Route::get('/main-data', [AdminController::class, 'mainData']);
-    Route::post('/main-data', [AdminController::class, 'mainData']);
-    Route::get('/header', [AdminController::class, 'header']);
-    Route::post('/header', [AdminController::class, 'header']);
-    Route::get('/footer', [AdminController::class, 'footer']);
-    Route::post('/footer', [AdminController::class, 'footer']);
-
-    Route::get('/footer/friends-logo', [AdminController::class, 'footerFriendsLogo']);
-    Route::get('/footer/friends-logo/add', [AdminController::class, 'footerFriendsLogoAdd']);
-    Route::post('/footer/friends-logo/add', [AdminController::class, 'footerFriendsLogoAdd']);
-    Route::get('/footer/friends-logo/edit/{id}', [AdminController::class, 'footerFriendsLogoEdit']);
-    Route::post('/footer/friends-logo/edit/{id}', [AdminController::class, 'footerFriendsLogoEdit']);
-    Route::get('/footer/friends-logo/delete/{id}', [AdminController::class, 'footerFriendsLogoDelete']);
-
-    Route::get('/customer-satisfaction', [AdminController::class, 'CustomerSatisfaction']);
-    Route::post('/customer-satisfaction', [AdminController::class, 'CustomerSatisfaction']);
-    Route::get('/you-trust', [AdminController::class, 'youTrustSection']);
-    Route::post('/you-trust', [AdminController::class, 'youTrustSection']);
-
-
-    /**
-     * sliders
-     */
-    Route::prefix('/slider')->as('slider.')->group(function () {
-
-        Route::get('/clientsreviews', [SliderController::class, 'clientsReviews']);
-        Route::get('/clientsreviews_edit/{type}', [SliderController::class, 'clientsReviewsEdit']);
-        Route::post('/clientsreviews_edit/{type}', [SliderController::class, 'clientsReviewsEdit']);
-        Route::get('/clientsreviews_delete/{type}', [SliderController::class, 'clientsReviewsDelete']);
-        Route::post('/clientsreviews_add', [SliderController::class, 'clientsReviewsAdd']);
-        Route::get('/clientsreviews_add', [SliderController::class, 'clientsReviewsAdd']);
-
-
-        Route::get('/mainslider', [SliderController::class, 'mainSlider']);
-        Route::get('/mainslider/{type}', [SliderController::class, 'mainSliderEdit']);
-        Route::post('/mainslider/{type}', [SliderController::class, 'mainSliderEdit']);
-        Route::get('/mainslider_delete/{type}', [SliderController::class, 'mainSliderDelete']);
-        Route::post('/mainslider_add', [SliderController::class, 'mainSliderAdd']);
-        Route::get('/mainslider_add', [SliderController::class, 'mainSliderAdd']);
-
-        Route::get('/whyus', [SliderController::class, 'whyUs']);
-        Route::get('/whyus/{type}', [SliderController::class, 'whyUsEdit']);
-        Route::post('/whyus/{type}', [SliderController::class, 'whyUsEdit']);
-        Route::get('/whyus_delete/{type}', [SliderController::class, 'whyUsDelete']);
-        Route::post('/whyus_add', [SliderController::class, 'whyUsAdd']);
-        Route::get('/whyus_add', [SliderController::class, 'whyUsAdd']);
-    });
-
-    /**
-     * pages
-     */
-    Route::prefix('/pages')->as('slider.')->group(function () {
-        Route::get('/', [PageController::class, 'index']);
-        Route::get('/add', [PageController::class, 'create']);
-        Route::post('/add', [PageController::class, 'create']);
-        Route::get('/edit/{id}', [PageController::class, 'edit']);
-        Route::post('/edit/{id}', [PageController::class, 'edit']);
-        Route::get('/delete/{id}', [PageController::class, 'destroy']);
-    });
-});
 
 Route::get('page/{id}', [WelcomeController::class, 'page']);
 
