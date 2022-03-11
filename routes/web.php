@@ -1,26 +1,18 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SliderController;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\UserController;
-use App\Models\Crmadmins;
-use App\Models\NotifSub;
 use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
 use App\Services\ContractAgreementService;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
-use PayPal\Api\Agreement;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,14 +25,17 @@ use PayPal\Api\Agreement;
 |
 */
 
-Route::get('/step2', [SignupController::class, 'step2']);
-Route::post('/step2', [SignupController::class, 'postSteptwo']);
-Route::get('/thank_you', [SignupController::class, 'thank_you']);
-Route::post('/step1', [SignupController::class, 'postRegisterStep1']);
 Route::get('/step1', [SignupController::class, 'getRegister']);
-Route::post('/step3', [SignupController::class, 'postRegisterStep3']);
+Route::post('/step1', [SignupController::class, 'postRegisterStep1']);
+
+Route::post('/step2', [SignupController::class, 'postSteptwo']);
+Route::get('/step2', [SignupController::class, 'step2']);
+
 Route::get('/step3', [SignupController::class, 'getRegisterStep3']);
+Route::post('/step3', [SignupController::class, 'postRegisterStep3']);
+
 Route::get("/final", [SignupController::class, 'getFinal']);
+Route::get('/thank_you', [SignupController::class, 'thank_you']);
 
 Route::get("/genpdf", function (ContractAgreementService $contractAgreementService) {
     $input = [
