@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
@@ -34,14 +36,15 @@ use App\Services\ContractAgreementService;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
-class SignupController  extends Controller {
+class SignupController  extends Controller
+{
 
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-//    private $_api_context;
+    //    private $_api_context;
     /**
      * @var null
      */
@@ -56,16 +59,16 @@ class SignupController  extends Controller {
         // define("AUTHORIZENET_API_LOGIN_ID", env('AUTHORIZENET_API_LOGIN_ID'));
         // define("AUTHORIZENET_TRANSACTION_KEY", env('AUTHORIZENET_TRANSACTION_KEY'));
         // define("AUTHORIZENET_SANDBOX", true);
-//        $user = User::find(21);
-//         $user->charge(3333, [
-//                'source' => 'btok_6Jycge4g8yAAaO',
-//                'receipt_email' => $user->email,
-//            ]);
-//         dd('done');
-//       // $user->subscription('monthly')->create('btok_6JyYZgrEE93fG9');die;
-//        $paypal_conf = Config::get('paypal');
-//        $this->_api_context = new ApiContext(new OAuthTokenCredential($paypal_conf['client_id'], $paypal_conf['secret']));
-//        $this->_api_context->setConfig($paypal_conf['settings']);
+        //        $user = User::find(21);
+        //         $user->charge(3333, [
+        //                'source' => 'btok_6Jycge4g8yAAaO',
+        //                'receipt_email' => $user->email,
+        //            ]);
+        //         dd('done');
+        //       // $user->subscription('monthly')->create('btok_6JyYZgrEE93fG9');die;
+        //        $paypal_conf = Config::get('paypal');
+        //        $this->_api_context = new ApiContext(new OAuthTokenCredential($paypal_conf['client_id'], $paypal_conf['secret']));
+        //        $this->_api_context->setConfig($paypal_conf['settings']);
 
     }
 
@@ -78,12 +81,11 @@ class SignupController  extends Controller {
     {
         $data = Admin::all()->where('page_type', 'home_page');
         $result1 = array();
-        foreach ($data as $item)
-        {
+        foreach ($data as $item) {
             $result1[$item->page_item] = $item->value;
         }
-        $result = array_merge($result1,$this->data);
-        return view('main.signup',compact('result'));
+        $result = array_merge($result1, $this->data);
+        return view('main.signup', compact('result'));
     }
 
     /**
@@ -113,24 +115,24 @@ class SignupController  extends Controller {
         // $user->password =$data['password'];
         $user->name = ($data['fname']) . (isset($data['mname']) ? $data['mname'] : "") . (isset($data['lname']) ? $data['lname'] : "");
         $user->sno = $data["serialno"];
-        if($user->save()){
+        if ($user->save()) {
 
             $profile            = new Profile;
             $profile->fname     = $data['fname'];
             $profile->mname     = isset($data['mname']) ? $data['mname'] : null;
             $profile->lname = isset($data['lname']) ? $data['lname'] : null;
             $profile->paddress  = isset($data['paddress']) ? $data['paddress'] : null;
-            $profile->city      = isset($data['city'])? $data['city'] : null;
-            $profile->state     = isset($data['state'])? $data['state'] : null;
-            $profile->zip       = isset($data['zip'])? $data['zip'] : null;
+            $profile->city      = isset($data['city']) ? $data['city'] : null;
+            $profile->state     = isset($data['state']) ? $data['state'] : null;
+            $profile->zip       = isset($data['zip']) ? $data['zip'] : null;
 
             $profile->mpaddress = isset($data['sameadd']) ? $data['paddress'] : $data['mpaddress'];
             $profile->mcity     = isset($data['sameadd']) ? $data['city']    : $data['mcity'];
             $profile->mstate    = isset($data['sameadd']) ? $data['state']   : $data['mstate'];
             $profile->mzip      = isset($data['sameadd']) ? $data['zip']     : $data['mzip'];
 
-            $profile->hno       = isset($data['hno'])? $data['hno'] : null;
-            $profile->mno       = isset($data['mno'])? $data['mno'] : null;
+            $profile->hno       = isset($data['hno']) ? $data['hno'] : null;
+            $profile->mno       = isset($data['mno']) ? $data['mno'] : null;
 
             $profile->ml = $data["ml"];
             $profile->hau = $data["hau"];
@@ -145,10 +147,10 @@ class SignupController  extends Controller {
 
 
         return false;
-
     }
 
-    protected function createOrders(array $data,$profile){
+    protected function createOrders(array $data, $profile)
+    {
         $order = new Order;
 
         $order->card_number =  $data["card_number"];
@@ -171,29 +173,32 @@ class SignupController  extends Controller {
         return $order->save();
     }
 
-    protected  function createLaststep(array $data,$profile){
+    protected  function createLaststep(array $data, $profile)
+    {
         $last = new Laststep;
         $last->driving_license_number = $data["dln"];
         $last->driving_license_state = $data["dls"];
         $last->social_security_number = $data["ssn"];
-        $last->birthdate = $data["year"]."-".$data["month"]."-".$data["day"];
+        $last->birthdate = $data["year"] . "-" . $data["month"] . "-" . $data["day"];
         $last->profile()->associate($profile);
         return $last->save();
     }
 
-    public function getFinal(){
+    public function getFinal()
+    {
         return redirect('http://credit1solutions.com/thank-you/');
     }
 
-    public function getRegister(){
-        if(session()->has($this->current_step)&&session($this->current_step)!="step1")
-            return redirect()->to("/".session($this->current_step));
+    public function getRegister()
+    {
+        if (session()->has($this->current_step) && session($this->current_step) != "step1")
+            return redirect()->to("/" . session($this->current_step));
 
-        if(!session()->has($this->current_step))
-                session()->put($this->current_step,"step1");
+        if (!session()->has($this->current_step))
+            session()->put($this->current_step, "step1");
 
         $states = $this->getStateList();
-        if(session()->has($this->form_session)) {
+        if (session()->has($this->form_session)) {
             $data = session()->get($this->form_session);
             return view('new_auth.register', [
                 $data,
@@ -201,193 +206,195 @@ class SignupController  extends Controller {
             ]);
         }
 
-        return view('new_auth.register')->with("states",$states);
+        return view('new_auth.register')->with("states", $states);
     }
 
-public function postRegisterStep1(Request $request){
+    public function postRegisterStep1(Request $request)
+    {
         $inputs = $request->all();
         $inputs["serialno"] = $this->returnSerialNo();
         session()->put($this->form_session, $inputs);
         session()->put($this->current_step, "step2");
         return redirect()->to('/step2');
-}
-
-public function getRegisterStep3(){
-
-    if(!session()->has($this->current_step))
-        return redirect()->to("/step1");
-
-    if(session($this->current_step)!="step3")
-        return redirect()->to("/".session($this->current_step));
-
-    $formData = session($this->form_session);
-
-    $dates = array();
-    $dates["days"] = array();
-    $dates["month"] = array();
-    $dates["year"] = array();
-    $dates["days"]["default"] = "DATE";
-    $dates["month"]["default"] = "MONTH";
-    $dates["year"]["default"] = "YEAR";
-    for($i=1;$i<=31;$i++){
-        $dates["days"][$i.""] = $i;
-    }
-    for($i=1;$i<=12;$i++){
-      $dates["month"][$i.""] = $i;
-    }
-    for($i=1930;$i<=2015;$i++){
-      $dates["year"][$i.""] = $i;
     }
 
-      return view("step3.step3")->with("today",Carbon::now()->toDateString())->with("dates",$dates)->with("formData",$formData)->
-                    with("states",$this->getStateList());
-}
+    public function getRegisterStep3()
+    {
 
-public function postRegisterStep3(Request $request){
-    set_time_limit(300);
+        if (!session()->has($this->current_step))
+            return redirect()->to("/step1");
 
+        if (session($this->current_step) != "step3")
+            return redirect()->to("/" . session($this->current_step));
 
-    $input = $request->all();
-    $input["receipt"] = [];
-    $input["receipt"]  = $this->returnRecipient();
-    $input["receipt"]["to"] = $input["step1_email"];
-    $input["notification"] = $this->returnNotification();
+        $formData = session($this->form_session);
 
-    // dd(["receiptc"=>$input["receipt"] ,"notification"=>$input["notification"]]);
+        $dates = array();
+        $dates["days"] = array();
+        $dates["month"] = array();
+        $dates["year"] = array();
+        $dates["days"]["default"] = "DATE";
+        $dates["month"]["default"] = "MONTH";
+        $dates["year"]["default"] = "YEAR";
+        for ($i = 1; $i <= 31; $i++) {
+            $dates["days"][$i . ""] = $i;
+        }
+        for ($i = 1; $i <= 12; $i++) {
+            $dates["month"][$i . ""] = $i;
+        }
+        for ($i = 1930; $i <= 2015; $i++) {
+            $dates["year"][$i . ""] = $i;
+        }
 
-    $input["date"] = Carbon::now()->toFormattedDateString();
-    $input["service_date"] = Carbon::now()->addDays(35)->toFormattedDateString();
-    $sessionData = session($this->form_session);
-
-    $profile = $this->create($sessionData["step1"]);
-    $this->createOrders($sessionData["step2"],$profile);
-    $this->createLaststep($input,$profile);
-
-    $states = $this->getStateList();
-    $input["step1_state_info"] = $states[$input["step1_state"]];
-    $packageDate = explode("-", $input["step2_packagedate"]."");
-    $then = Carbon::createFromDate($packageDate[0],$packageDate[1],$packageDate[2]);
-    $after = Carbon::createFromDate($packageDate[0],$packageDate[1],$packageDate[2]);
-    $input["credit_report_date"] = Carbon::now()->toFormattedDateString()." ".Carbon::now()->toTimeString();
-    $input["first_payment_date"] = $then->toFormattedDateString();
-    $input["service_start_date"] = $then->addDays(30)->toFormattedDateString();
-    $input["today"] = $this->formatDate(Carbon::now()->toDateString());
-    $input["three_today"] = $this->formatDate(Carbon::now()->addDays(3)->toDateString());
-    $input["fpd_pdf"] = $input["first_payment_date"];
-    $input["ssd_pdf"] =   $input["service_start_date"] ;
-    $input["crd_pdf"] = Carbon::now()->toFormattedDateString();
-    $input["signature"] = explode("-",$input["ssn"])[2];
-    $input["agreement_date"] = Carbon::now()->format('jS \d\a\y \\of F') .", ". substr(Carbon::now()->format('Y'),0,2)."{".substr(Carbon::now()->format('Y'),2,4)."}";
-    $tempDate = array();
-    for($i=4;$i<=10;$i++){
-    $tempDate[$i.""] = $i."th";
+        return view("step3.step3")->with("today", Carbon::now()->toDateString())->with("dates", $dates)->with("formData", $formData)->with("states", $this->getStateList());
     }
-    $selectedDay = array_merge( ["1"=>"1st","2"=>"2nd","3"=>"3rd"],$tempDate);
-    $input["day_diff"] = $selectedDay[$after->diffInDays(Carbon::now())-1];
-     $input["package_image"] =($input["step2_package"]=="Comprehensive")? URL::asset("/images").'/cs.jpg':URL::asset("/images").'/fss.jpg';
-    // dd($input);
 
-    $u="_";
-    if($input["step1_mname"]!="")
-            $filename = public_path()."/pdfs/".$input["step1_fname"].$u.$input["step1_mname"].$u.$input["step1_lname"].$u.$input['step1_serialno'].".pdf";
+    public function postRegisterStep3(Request $request)
+    {
+        set_time_limit(300);
+
+
+        $input = $request->all();
+        $input["receipt"] = [];
+        $input["receipt"]  = $this->returnRecipient();
+        $input["receipt"]["to"] = $input["step1_email"];
+        $input["notification"] = $this->returnNotification();
+
+        // dd(["receiptc"=>$input["receipt"] ,"notification"=>$input["notification"]]);
+
+        $input["date"] = Carbon::now()->toFormattedDateString();
+        $input["service_date"] = Carbon::now()->addDays(35)->toFormattedDateString();
+        $sessionData = session($this->form_session);
+
+        $profile = $this->create($sessionData["step1"]);
+        $this->createOrders($sessionData["step2"], $profile);
+        $this->createLaststep($input, $profile);
+
+        $states = $this->getStateList();
+        $input["step1_state_info"] = $states[$input["step1_state"]];
+        $packageDate = explode("-", $input["step2_packagedate"] . "");
+        $then = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
+        $after = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
+        $input["credit_report_date"] = Carbon::now()->toFormattedDateString() . " " . Carbon::now()->toTimeString();
+        $input["first_payment_date"] = $then->toFormattedDateString();
+        $input["service_start_date"] = $then->addDays(30)->toFormattedDateString();
+        $input["today"] = $this->formatDate(Carbon::now()->toDateString());
+        $input["three_today"] = $this->formatDate(Carbon::now()->addDays(3)->toDateString());
+        $input["fpd_pdf"] = $input["first_payment_date"];
+        $input["ssd_pdf"] =   $input["service_start_date"];
+        $input["crd_pdf"] = Carbon::now()->toFormattedDateString();
+        $input["signature"] = explode("-", $input["ssn"])[2];
+        $input["agreement_date"] = Carbon::now()->format('jS \d\a\y \\of F') . ", " . substr(Carbon::now()->format('Y'), 0, 2) . "{" . substr(Carbon::now()->format('Y'), 2, 4) . "}";
+        $tempDate = array();
+        for ($i = 4; $i <= 10; $i++) {
+            $tempDate[$i . ""] = $i . "th";
+        }
+        $selectedDay = array_merge(["1" => "1st", "2" => "2nd", "3" => "3rd"], $tempDate);
+        $input["day_diff"] = $selectedDay[$after->diffInDays(Carbon::now()) - 1];
+        $input["package_image"] = ($input["step2_package"] == "Comprehensive") ? URL::asset("/images") . '/cs.jpg' : URL::asset("/images") . '/fss.jpg';
+        // dd($input);
+
+        $u = "_";
+        if ($input["step1_mname"] != "")
+            $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_mname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
         else
-            $filename = public_path()."/pdfs/".$input["step1_fname"].$u.$input["step1_lname"].$u.$input['step1_serialno'].".pdf";
+            $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
 
 
-    if($input["receipt"]["include_data"] || $input["notification"]["inlcude_data"]){
-        $input['pdf_content'] = $this->contractAgreementService->getAll($input);
-        $pdf = PDF::loadView('pdf.agreement', $input);
-        $paper_size = array(0,0,790,850);
-        $pdf->setPaper($paper_size, "portrait");
-         // return $pdf->download("agreement.pdf");
-        $pdf->save($filename);
+        if ($input["receipt"]["include_data"] || $input["notification"]["inlcude_data"]) {
+            $input['pdf_content'] = $this->contractAgreementService->getAll($input);
+            $pdf = PDF::loadView('pdf.agreement', $input);
+            $paper_size = array(0, 0, 790, 850);
+            $pdf->setPaper($paper_size, "portrait");
+            // return $pdf->download("agreement.pdf");
+            $pdf->save($filename);
+        }
+
+
+        Mail::send('step3.email', $input, function ($message) use ($input) {
+
+            $message->to($input["notification"]["email"], 'Credit1Solutions')->subject($input["notification"]["subject"]);
+        });
+
+        Mail::send('step3.receipient', $input, function ($message) use ($input) {
+
+
+            $message->to($input["receipt"]["to"], 'Credit1Solutions')->subject($input["receipt"]["subject"])->from($input["receipt"]["from"]);
+        });
+
+        unlink($filename);
+        session()->pull($this->form_session);
+        session()->pull($this->current_step);
+
+        // return "thanks";
+        return redirect()->to("/final");
+    }
+
+    private function formatDate($date)
+    {
+        $dateArray = explode("-", $date);
+        return ($dateArray[1] . "/" . $dateArray[2] . "/" . $dateArray[0]);
     }
 
 
-    Mail::send('step3.email', $input, function($message) use ($input){
-
-        $message->to($input["notification"]["email"], 'Credit1Solutions')->subject($input["notification"]["subject"]);
-    });
-
-    Mail::send('step3.receipient', $input, function($message) use ($input){
 
 
-        $message->to($input["receipt"]["to"], 'Credit1Solutions')->subject($input["receipt"]["subject"])->from($input["receipt"]["from"]);
-    });
+    public function step2($token = null)
+    {
+        if (!session()->has($this->current_step))
+            return redirect()->to("/step1");
 
-    unlink($filename);
-    session()->pull($this->form_session);
-    session()->pull($this->current_step);
+        if (session($this->current_step) != "step2")
+            return redirect()->to("/" . session($this->current_step));
 
-    // return "thanks";
-    return redirect()->to("/final");
-}
+        $dates = array();
+        $dates = ["now" => Carbon::now()->toFormattedDateString(), "fiveDays" => Carbon::now()->addDays(5)->toFormattedDateString(), "later" => Carbon::now()->addDays(35)->toFormattedDateString()];
+        $data = Admin::all()->where('page_type', 'home_page');
+        $result1 = array();
+        foreach ($data as $item) {
+            $result1[$item->page_item] = $item->value;
+        }
+        $result = array_merge($result1, $this->data);
+        $result["prevStep"] = session($this->form_session);
 
-private function formatDate($date){
-    $dateArray = explode("-",$date);
-    return ($dateArray[1]."/".$dateArray[2]."/".$dateArray[0]);
-}
+        $result["dates"] = $dates;
 
+        $currentYear = Carbon::now()->__get("year");
+        $years = array();
+        $years["EXP-year"] = "EXP-year";
+        for ($i = $currentYear, $j = $currentYear + 7; $i <= $j; $i++) {
+            $years[substr($i . "", 2, 4)] = substr($i . "", 2, 4);
+        }
 
+        $result["years"] = $years;
+        $result["step1"] = json_encode(session($this->form_session));
 
-
-public function step2($token=null){
-            if(!session()->has($this->current_step))
-                return redirect()->to("/step1");
-
-            if(session($this->current_step)!="step2")
-                return redirect()->to("/".session($this->current_step));
-
-            $dates = array();
-            $dates = ["now"=>Carbon::now()->toFormattedDateString(),"fiveDays"=>Carbon::now()->addDays(5)->toFormattedDateString(),"later"=>Carbon::now()->addDays(35)->toFormattedDateString()];
-            $data = Admin::all()->where('page_type', 'home_page');
-            $result1 = array();
-            foreach ($data as $item) {
-                $result1[$item->page_item] = $item->value;
-            }
-            $result = array_merge($result1, $this->data);
-            $result["prevStep"] = session($this->form_session);
-
-            $result["dates"] = $dates;
-
-            $currentYear = Carbon::now()->__get("year");
-            $years = array();
-            $years["EXP-year"] = "EXP-year";
-            for($i=$currentYear,$j = $currentYear+7;$i<=$j;$i++){
-                $years[substr($i."", 2,4)] = substr($i."", 2,4);
+        $packageDate = array();
+        $startDate = array();
+        $startDate["default"] = "";
+        $packageDate["default"] = "";
+        $total = 10;
+        for ($i = 3; $i < $total; $i++) {
+            $packageDate[Carbon::now()->addDays($i)->toDateString() . ""] = Carbon::now()->addDays($i)->toFormattedDateString();
+            if (strpos($packageDate[Carbon::now()->addDays($i)->toDateString() . ""], "31")) {
+                unset($packageDate[Carbon::now()->addDays($i)->toDateString() . ""]);
+                $total =  $total + 1;
             }
 
-            $result["years"] = $years;
-            $result["step1"] = json_encode(session($this->form_session));
-
-            $packageDate = array();
-            $startDate = array();
-            $startDate["default"] = "";
-            $packageDate["default"] = "";
-            $total = 10;
-            for($i=3;$i<$total;$i++){
-                $packageDate[Carbon::now()->addDays($i)->toDateString().""] = Carbon::now()->addDays($i)->toFormattedDateString();
-                if (strpos($packageDate[Carbon::now()->addDays($i)->toDateString().""], "31") ) {
-                              unset($packageDate[Carbon::now()->addDays($i)->toDateString().""]);
-                               $total =  $total + 1;
-               }
-
-                $startDate[Carbon::now()->addDays($i)->toDateString().""] = Carbon::now()->addDays($i+30)->toFormattedDateString();
+            $startDate[Carbon::now()->addDays($i)->toDateString() . ""] = Carbon::now()->addDays($i + 30)->toFormattedDateString();
 
 
-                 if (strpos($startDate[Carbon::now()->addDays($i)->toDateString().""], "31") ) {
-                             $startDate[Carbon::now()->addDays($i)->toDateString().""] = Carbon::now()->addDays($i+31)->toFormattedDateString();
-               }
+            if (strpos($startDate[Carbon::now()->addDays($i)->toDateString() . ""], "31")) {
+                $startDate[Carbon::now()->addDays($i)->toDateString() . ""] = Carbon::now()->addDays($i + 31)->toFormattedDateString();
             }
-            for ($i=3;$i<10;$i++)
-               {
+        }
+        for ($i = 3; $i < 10; $i++) {
+        }
+        $result["packageDate"] = $packageDate;
+        $result["json_package_date"] = json_encode($packageDate);
+        $result["json_startdate"] = json_encode($startDate);
 
-	        }
-            $result["packageDate"] = $packageDate;
-            $result["json_package_date"] = json_encode($packageDate);
-            $result["json_startdate"] = json_encode($startDate);
-
-            return view('main.step2', compact('result'));
+        return view('main.step2', compact('result'));
     }
 
     /**
@@ -395,27 +402,26 @@ public function step2($token=null){
      * Email : developerarturpoghosyan@gmail.com
      * @return \Illuminate\View\View
      */
-    public function thank_you(){
+    public function thank_you()
+    {
         $result = array();
         $payment_success = session('payment_success');
         $payment_error = session('payment_error');
-        if(!empty($payment_success)){
+        if (!empty($payment_success)) {
             $result['payment_status'] = $payment_success;
             session()->forget('payment_success');
-        }
-        elseif(!empty($payment_error)){
+        } elseif (!empty($payment_error)) {
             $result['payment_status'] = $payment_error;
             session()->forget('payment_error');
-        }
-        else
+        } else
             $result['payment_status'] = 'payment was not done';
 
         $data = Admin::all()->where('page_type', 'home_page');
         foreach ($data as $item) {
             $result1[$item->page_item] = $item->value;
         }
-        $result = array_merge($result1,$this->data);
-        return view('main.thank_you',compact('result'));
+        $result = array_merge($result1, $this->data);
+        return view('main.thank_you', compact('result'));
     }
 
     /**
@@ -423,7 +429,8 @@ public function step2($token=null){
      * Email : developerarturpoghosyan@gmail.com
      * @return mixed
      */
-    public function getPaymentStatus(Request $request){
+    public function getPaymentStatus(Request $request)
+    {
         // Get the payment ID before session clear
         $payment_id = session('paypal_payment_id');
         // clear the session payment ID
@@ -447,7 +454,7 @@ public function step2($token=null){
         //Execute the payment
         $result = $payment->execute($execution, $this->_api_context);
 
-//        echo '<pre>';print_r($result);echo '</pre>';exit; // DEBUG RESULT, remove it later
+        //        echo '<pre>';print_r($result);echo '</pre>';exit; // DEBUG RESULT, remove it later
 
         if ($result->getState() == 'approved') { // payment made
             session()->forget('payment_step1');
@@ -461,11 +468,10 @@ public function step2($token=null){
     public function save($token)
     {
 
-        $url_token=  $_SERVER['HTTP_REFERER'].'/'.$token;
-        session()->put('url_token',$url_token);
-//        dd($url_token);
-        Mail::send('emails.welcome', ['key' => 'value'], function($message)
-        {
+        $url_token =  $_SERVER['HTTP_REFERER'] . '/' . $token;
+        session()->put('url_token', $url_token);
+        //        dd($url_token);
+        Mail::send('emails.welcome', ['key' => 'value'], function ($message) {
             $message->to('@gmail.com', 'John Smith')->subject('Activation');
         });
     }
@@ -476,17 +482,19 @@ public function step2($token=null){
      */
 
 
-    public function postSteptwo(Request $request){
-                        $form = array();
-                        $form["step1"] = session($this->form_session);
-                        $form["step2"] = $request->all();
-                        session()->put($this->form_session,$form);
-                        session()->put($this->current_step,"step3");
-                        return redirect()->to("/step3");
-        }
+    public function postSteptwo(Request $request)
+    {
+        $form = array();
+        $form["step1"] = session($this->form_session);
+        $form["step2"] = $request->all();
+        session()->put($this->form_session, $form);
+        session()->put($this->current_step, "step3");
+        return redirect()->to("/step3");
+    }
 
 
-    public function postPayment(Request $request){
+    public function postPayment(Request $request)
+    {
 
 
 
@@ -553,16 +561,16 @@ public function step2($token=null){
             $data['messages']   = $validator->messages()->toArray();
 
             $inputs             = $request->all();
-            foreach($inputs as $k=>$v){
+            foreach ($inputs as $k => $v) {
                 $data[$k]       = $v;
             }
-            session(["step_error"=>$data]);
+            session(["step_error" => $data]);
 
             return redirect()->back();
         } else {
             $inputs             = $request->all();
-            $key=hash('sha256', str_shuffle('abcefghijklmnopqrstuvwxyz0123456789'));
-            Orders::CreateOrders($inputs,$key);
+            $key = hash('sha256', str_shuffle('abcefghijklmnopqrstuvwxyz0123456789'));
+            Orders::CreateOrders($inputs, $key);
 
             $this->save($key);
             return redirect('signup/thank-you');
@@ -573,38 +581,38 @@ public function step2($token=null){
 
         $step1 = session('payment_step1');
         $step2 = $request->all();
-        if(!isset($step2['signup']['report_up_front'])){
+        if (!isset($step2['signup']['report_up_front'])) {
             return redirect('signup/thank_you');
         }
-//        $creditCardToken = $step2['stripeToken'];
-//        $user = User::find($step1['id']);
-//       $user->subscription('monthly')->create('btok_6Jy8q2CqZUsgcW');
-//        if(isset($step2['signup']['report_up_front'])){
-//            $creditCardToken1 = $step2['stripeToken'];
-//            $user->charge(1399, [
-//                'source' => 'btok_6Jy8q2CqZUsgcW',
-//                'receipt_email' => $user->email,
-//            ]);
-//
-//        }
+        //        $creditCardToken = $step2['stripeToken'];
+        //        $user = User::find($step1['id']);
+        //       $user->subscription('monthly')->create('btok_6Jy8q2CqZUsgcW');
+        //        if(isset($step2['signup']['report_up_front'])){
+        //            $creditCardToken1 = $step2['stripeToken'];
+        //            $user->charge(1399, [
+        //                'source' => 'btok_6Jy8q2CqZUsgcW',
+        //                'receipt_email' => $user->email,
+        //            ]);
+        //
+        //        }
         $first_payment = $step2['signup']['cc'][0];
-        $input_date = explode('/',$first_payment['cc_exp']);
-//        $date = '20'.$input_date[1].'-'.$input_date[0];
-        if($step2['payment_method'][0] == 'cc') {
+        $input_date = explode('/', $first_payment['cc_exp']);
+        //        $date = '20'.$input_date[1].'-'.$input_date[0];
+        if ($step2['payment_method'][0] == 'cc') {
             $subscription = new AuthorizeNet_Subscription;
             $subscription->name = "PHP Monthly subscription";
             $subscription->intervalLength = "1";
             $subscription->intervalUnit = "months";
-            $subscription->startDate = date("Y-m-d");//'2015-05-28';
+            $subscription->startDate = date("Y-m-d"); //'2015-05-28';
             $subscription->totalOccurrences = "1";
             $subscription->amount = "99.90";
-            $subscription->creditCardCardNumber = $first_payment['cc_num'];//"6011000000000012";
+            $subscription->creditCardCardNumber = $first_payment['cc_num']; //"6011000000000012";
             $subscription->creditCardExpirationDate = $first_payment['cc_exp']; //"2018-10";
             $subscription->creditCardCardCode = $first_payment['cc_cvv'];
             $subscription->billToFirstName = $step1['first_name'];
             $subscription->billToLastName = $step1['last_name'];
 
-// Create the subscription.
+            // Create the subscription.
             $request = new AuthorizeNetARB;
             $response = $request->createSubscription($subscription);
             $subscription_id = $response->getSubscriptionId();
@@ -613,28 +621,28 @@ public function step2($token=null){
             $sale->card_num = $first_payment['cc_num'];
             $sale->exp_date = $first_payment['cc_exp'];
             $sale->card_code = $first_payment['cc_cvv'];
-// Use eCheck:
-//        $sale->setECheck(
-//            '121042882',
-//            '123456789123',
-//            'CHECKING',
-//            'Bank of Earth',
-//            'Jane Doe',
-//            'WEB'
-//        );
+            // Use eCheck:
+            //        $sale->setECheck(
+            //            '121042882',
+            //            '123456789123',
+            //            'CHECKING',
+            //            'Bank of Earth',
+            //            'Jane Doe',
+            //            'WEB'
+            //        );
 
-// Set multiple line items:
-//        $sale->addLineItem('item1', 'Golf tees', 'Blue tees', '2', '5.00', 'N');
-//        $sale->addLineItem('item2', 'Golf shirt', 'XL', '1', '40.00', 'N');
+            // Set multiple line items:
+            //        $sale->addLineItem('item1', 'Golf tees', 'Blue tees', '2', '5.00', 'N');
+            //        $sale->addLineItem('item2', 'Golf shirt', 'XL', '1', '40.00', 'N');
 
-// Set Invoice Number:
+            // Set Invoice Number:
             $sale->invoice_num = time();
-        }else{
+        } else {
             $subscription = new AuthorizeNet_Subscription;
             $subscription->name = "PHP Monthly subscription";
             $subscription->intervalLength = "1";
             $subscription->intervalUnit = "months";
-            $subscription->startDate = date("Y-m-d");//'2015-05-28';
+            $subscription->startDate = date("Y-m-d"); //'2015-05-28';
             $subscription->totalOccurrences = "1";
             $subscription->amount = "90.99";
             $subscription->bankAccountRoutingNumber = $step2['signup']['ach'][0]['routing_number'];
@@ -644,32 +652,32 @@ public function step2($token=null){
             $subscription->billToFirstName = $step1['first_name'];
             $subscription->billToLastName = $step1['last_name'];
 
-// Create the subscription.
+            // Create the subscription.
             $request = new AuthorizeNetARB;
             $response = $request->createSubscription($subscription);
             $subscription_id = $response->getSubscriptionId();
             $sale = new AuthorizeNetAIM;
             $sale->amount = "12.99";
-// Use eCheck:
+            // Use eCheck:
             $sale->setECheck(
-                $step2['signup']['ach'][0]['routing_number'],//'121042882',
+                $step2['signup']['ach'][0]['routing_number'], //'121042882',
                 //'123456789123',
-                $step2['signup']['ach'][0]['account_number'],//'CHECKING',
-                '',//'Bank of Earth',
-                $step1['first_name'].' '.$step1['last_name'], //'Jane Doe',
-                ''//'WEB'
+                $step2['signup']['ach'][0]['account_number'], //'CHECKING',
+                '', //'Bank of Earth',
+                $step1['first_name'] . ' ' . $step1['last_name'], //'Jane Doe',
+                '' //'WEB'
             );
-//
+            //
 
-// Set Invoice Number:
+            // Set Invoice Number:
             $sale->invoice_num = time();
         }
-// Set a Merchant Defined Field:
+        // Set a Merchant Defined Field:
         $sale->setCustomField("entrance_source", "Search Engine");
         $response = $sale->authorizeAndCapture();
         if ($response->approved) {
             $transaction_id = $response->transaction_id;
-//            dd($transaction_id);
+            //            dd($transaction_id);
         };
         dd('done');
 
@@ -677,69 +685,69 @@ public function step2($token=null){
         return redirect('signup/thank_you')
             ->with('payment_success', 'Payment success');
 
-//        $payer = new Payer();
-//        $payer->setPaymentMethod('paypal');
-//
-//        $item_1 = new Item();
-//        $item_1->setName('registration '.$step1['first_name'].' '.$step1['last_name']) // item name
-//        ->setCurrency('USD')
-//            ->setQuantity(1)
-//            ->setDescription('test description')
-//            ->setPrice('12.99'); // unit price
-//
-//
-//        // add item to list
-//        $item_list = new ItemList();
-//        $item_list->setItems(array($item_1));
-//
-//        $amount = new Amount();
-//        $amount->setCurrency('USD')
-//            ->setTotal('12.99');
-//
-//        $transaction = new Transaction();
-//        $transaction->setAmount($amount)
-//            ->setItemList($item_list)
-//            ->setDescription('Your transaction description');
-//
-//        $redirect_urls = new RedirectUrls();
-//        $redirect_urls->setReturnUrl(URL::route('payment.status'))
-//            ->setCancelUrl(URL::route('payment.status'));
-//
-//        $payment = new Payment();
-//        $payment->setIntent('Sale')
-//            ->setPayer($payer)
-//            ->setRedirectUrls($redirect_urls)
-//            ->setTransactions(array($transaction));
-//
-//        try {
-//            $payment->create($this->_api_context);
-//        } catch (\PayPal\Exception\PPConnectionException $ex) {
-//            if (\Config::get('app.debug')) {
-//                echo "Exception: " . $ex->getMessage() . PHP_EOL;
-//                $err_data = json_decode($ex->getData(), true);
-//                exit;
-//            } else {
-//                die('Some error occur, sorry for inconvenient');
-//            }
-//        }
-//
-//        foreach($payment->getLinks() as $link) {
-//            if($link->getRel() == 'approval_url') {
-//                $redirect_url = $link->getHref();
-//                break;
-//            }
-//        }
-//
-//        // add payment ID to session
-//        session(['paypal_payment_id' => $payment->getId()]);
-//
-//        if(isset($redirect_url)) {
-//            // redirect to paypal
-//            return Redirect::away($redirect_url);
-//        }
-//
-//        return Redirect::route('original.route')
-//            ->with('error', 'Unknown error occurred');
+        //        $payer = new Payer();
+        //        $payer->setPaymentMethod('paypal');
+        //
+        //        $item_1 = new Item();
+        //        $item_1->setName('registration '.$step1['first_name'].' '.$step1['last_name']) // item name
+        //        ->setCurrency('USD')
+        //            ->setQuantity(1)
+        //            ->setDescription('test description')
+        //            ->setPrice('12.99'); // unit price
+        //
+        //
+        //        // add item to list
+        //        $item_list = new ItemList();
+        //        $item_list->setItems(array($item_1));
+        //
+        //        $amount = new Amount();
+        //        $amount->setCurrency('USD')
+        //            ->setTotal('12.99');
+        //
+        //        $transaction = new Transaction();
+        //        $transaction->setAmount($amount)
+        //            ->setItemList($item_list)
+        //            ->setDescription('Your transaction description');
+        //
+        //        $redirect_urls = new RedirectUrls();
+        //        $redirect_urls->setReturnUrl(URL::route('payment.status'))
+        //            ->setCancelUrl(URL::route('payment.status'));
+        //
+        //        $payment = new Payment();
+        //        $payment->setIntent('Sale')
+        //            ->setPayer($payer)
+        //            ->setRedirectUrls($redirect_urls)
+        //            ->setTransactions(array($transaction));
+        //
+        //        try {
+        //            $payment->create($this->_api_context);
+        //        } catch (\PayPal\Exception\PPConnectionException $ex) {
+        //            if (\Config::get('app.debug')) {
+        //                echo "Exception: " . $ex->getMessage() . PHP_EOL;
+        //                $err_data = json_decode($ex->getData(), true);
+        //                exit;
+        //            } else {
+        //                die('Some error occur, sorry for inconvenient');
+        //            }
+        //        }
+        //
+        //        foreach($payment->getLinks() as $link) {
+        //            if($link->getRel() == 'approval_url') {
+        //                $redirect_url = $link->getHref();
+        //                break;
+        //            }
+        //        }
+        //
+        //        // add payment ID to session
+        //        session(['paypal_payment_id' => $payment->getId()]);
+        //
+        //        if(isset($redirect_url)) {
+        //            // redirect to paypal
+        //            return Redirect::away($redirect_url);
+        //        }
+        //
+        //        return Redirect::route('original.route')
+        //            ->with('error', 'Unknown error occurred');
     }
 
     /**
@@ -747,76 +755,76 @@ public function step2($token=null){
      * Email : developerarturpoghosyan@gmail.com
      * Data from Db
      */
-    private function getData(){
+    private function getData()
+    {
         $clients_reviews = DB::table('clients_reviews_slider')
             ->get()->toArray();
 
         $why_us = DB::table('slider')
-            ->where('type','=','why_us')
+            ->where('type', '=', 'why_us')
             ->get()->toArray();
         $whyUS = array();
-        for($i = 0;$i<count($why_us);$i+=3){
+        for ($i = 0; $i < count($why_us); $i += 3) {
             $item = array();
-            for($j = $i;$j<$i+3;$j++)
-                if($j<count($why_us)){
-                    $why_us[$j]->id = $j+1;
-                    $item[]=$why_us[$j];
-
+            for ($j = $i; $j < $i + 3; $j++)
+                if ($j < count($why_us)) {
+                    $why_us[$j]->id = $j + 1;
+                    $item[] = $why_us[$j];
                 }
             $whyUS[] = $item;
         }
 
         $main_slider = DB::table('slider')
-            ->where('type','=','main')
+            ->where('type', '=', 'main')
             ->get()->toArray();
         $logo = DB::table('logo')
-            ->select('name','image AS val')
+            ->select('name', 'image AS val')
             ->get()->toArray();
         $images = DB::table('images')
-            ->select('name','image AS val')
-            ->where('position','=','main')
+            ->select('name', 'image AS val')
+            ->where('position', '=', 'main')
             ->get()->toArray();
         $content = DB::table('content')
-            ->select('name','content AS val')
+            ->select('name', 'content AS val')
             ->get()->toArray();
         $customer_satisfaction = DB::table('content')
-            ->where('position','=','customer_satisfaction')
+            ->where('position', '=', 'customer_satisfaction')
             ->get()->toArray();
         $menu['header'] = DB::table('pages')
-            ->select('name','url')
-            ->where('position','=','header')
+            ->select('name', 'url')
+            ->where('position', '=', 'header')
             ->get()->toArray();
         $menu['you_trust_1'] = DB::table('pages')
-            ->select('name','url')
-            ->where('position','=','you_trust_1')
+            ->select('name', 'url')
+            ->where('position', '=', 'you_trust_1')
             ->get()->toArray();
         $menu['you_trust_2'] = DB::table('pages')
-            ->select('name','url')
-            ->where('position','=','you_trust_2')
+            ->select('name', 'url')
+            ->where('position', '=', 'you_trust_2')
             ->get()->toArray();
         $menu['footer_1'] = DB::table('pages')
-            ->select('name','url')
-            ->where('position','=','footer_1')
+            ->select('name', 'url')
+            ->where('position', '=', 'footer_1')
             ->get()->toArray();
         $menu['footer_2'] = DB::table('pages')
-            ->select('name','url')
-            ->where('position','=','footer_2')
+            ->select('name', 'url')
+            ->where('position', '=', 'footer_2')
             ->get()->toArray();
         $menu['footer_3'] = DB::table('pages')
-            ->select('name','url')
-            ->where('position','=','footer_3')
+            ->select('name', 'url')
+            ->where('position', '=', 'footer_3')
             ->get()->toArray();
         $menu['footer_4'] = DB::table('pages')
-            ->select('name','url')
-            ->where('position','=','footer_4')
+            ->select('name', 'url')
+            ->where('position', '=', 'footer_4')
             ->get()->toArray();
         $friends_logo = DB::table('images')
-            ->where('position','=','footer-friends-logo')
+            ->where('position', '=', 'footer-friends-logo')
             ->get()->toArray();
         $data = array();
-        $dbData = array_merge($logo,$content,$images);
+        $dbData = array_merge($logo, $content, $images);
 
-        foreach($dbData as $val)
+        foreach ($dbData as $val)
             $data[$val->name] = $val->val;
 
         $data['friends_logo'] = $friends_logo;
@@ -826,12 +834,12 @@ public function step2($token=null){
         $data['menu'] = $menu;
         $data['customer_satisfaction'] = $customer_satisfaction;
         $this->data = $data;
-
     }
 
-    private function getStateList(){
+    private function getStateList()
+    {
         return [
-            'default' =>" ",
+            'default' => " ",
             'AL' => 'Alabama',
             'AK' => 'Alaska',
             'AZ' => 'Arizona',
@@ -885,47 +893,49 @@ public function step2($token=null){
         ];
     }
 
-    protected function returnRecipient(){
-            $receipt = EmailDetails::where("type","=","receipt");
-            $responseData=[];
+    protected function returnRecipient()
+    {
+        $receipt = EmailDetails::where("type", "=", "receipt");
+        $responseData = [];
 
-            if($receipt->count()!=0){
-                $receipt = $receipt->first();
-                $responseData["from"] = $receipt->to_from;
-                $responseData["message"] = $receipt->message;
-                $responseData["subject"] = $receipt->subject;
-                $responseData["include_data"] = ($receipt->include_data==1);
-                return $responseData;
-            }
-
-            $responseData["from"] = "noreply@credit1solutions.com";
-            $responseData["message"] = "Your signup process is complete.";
-            $responseData["subject"] = "Welcome to Credit1solution";
-            $responseData["include_data"] = true;
+        if ($receipt->count() != 0) {
+            $receipt = $receipt->first();
+            $responseData["from"] = $receipt->to_from;
+            $responseData["message"] = $receipt->message;
+            $responseData["subject"] = $receipt->subject;
+            $responseData["include_data"] = ($receipt->include_data == 1);
             return $responseData;
+        }
+
+        $responseData["from"] = "noreply@credit1solutions.com";
+        $responseData["message"] = "Your signup process is complete.";
+        $responseData["subject"] = "Welcome to Credit1solution";
+        $responseData["include_data"] = true;
+        return $responseData;
     }
 
 
-    protected function returnNotification(){
+    protected function returnNotification()
+    {
         $notification = EmailDetails::whereType("notification");
         $responseData = [];
-        if($notification->count()!=0){
+        if ($notification->count() != 0) {
             $notification = $notification->first();
             $responseData["message"] = $notification->message;
             $responseData["subject"] = $notification->subject;
-            $responseData["include_data"] = ($notification->include_data==1);
-        }else{
+            $responseData["include_data"] = ($notification->include_data == 1);
+        } else {
             $responseData["message"] = "A customer signed up.";
             $responseData["subject"] = "New signup @ Credit1solution.com";
             $responseData["include_data"] = true;
         }
 
         $responseData["email"] = [];
-        $emailSubscribers = NotifSub::where("included","=","1");
+        $emailSubscribers = NotifSub::where("included", "=", "1");
 
-        if($emailSubscribers->count()==0){
-            array_push($responseData["email"], "cs@credit1solutions.com") ;
-        }else{
+        if ($emailSubscribers->count() == 0) {
+            array_push($responseData["email"], "cs@credit1solutions.com");
+        } else {
             foreach ($emailSubscribers->get() as $subs) {
                 array_push($responseData["email"], $subs->email);
             }
@@ -934,7 +944,8 @@ public function step2($token=null){
         return $responseData;
     }
 
-    private function returnSerialNo(){
-        return rand(100000000,999999999)."-".substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), rand(0,21),3);
+    private function returnSerialNo()
+    {
+        return rand(100000000, 999999999) . "-" . substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), rand(0, 21), 3);
     }
 }
