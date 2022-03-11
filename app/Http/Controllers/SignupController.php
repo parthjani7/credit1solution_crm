@@ -182,7 +182,7 @@ class SignupController  extends Controller {
     }
 
     public function getFinal(){
-        return view("step3.success");
+        return redirect('http://credit1solutions.com/thank-you/');
     }
 
     public function getRegister(){
