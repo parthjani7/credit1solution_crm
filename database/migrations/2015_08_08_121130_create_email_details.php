@@ -4,14 +4,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmailDetails extends Migration {
+return new class extends Migration {
 
 
 	public function up()
 	{
 		Schema::create('email_details', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->id();
 			$table->string("to_from");
 			$table->string("type",50);
 			$table->string("subject");
@@ -23,7 +23,7 @@ class CreateEmailDetails extends Migration {
 
 	public function down()
 	{
-		Schema::drop('email_details');
+		Schema::dropIfExists('email_details');
 	}
 
-}
+};

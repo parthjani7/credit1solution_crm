@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCrmPasswordReset extends Migration {
+return new class extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class CreateCrmPasswordReset extends Migration {
 	{
 		Schema::create('crm_password_resets', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->id();
 			$table->string('email')->index();
 			$table->string('token')->index();
 			$table->timestamps();
@@ -29,7 +29,7 @@ class CreateCrmPasswordReset extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('crm_password_resets');
+		Schema::dropIfExists('crm_password_resets');
 	}
 
-}
+};

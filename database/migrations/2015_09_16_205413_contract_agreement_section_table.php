@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class ContractAgreementSectionTable extends Migration {
+return new class extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class ContractAgreementSectionTable extends Migration {
 	{
 		Schema::create('contract_agreement_section', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->id();
 			$table->string("section_name")->unique();
 			$table->string("section_description");
 			$table->text("content");
@@ -30,7 +30,7 @@ class ContractAgreementSectionTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('contract_agreement_section');
+		Schema::dropIfExists('contract_agreement_section');
 	}
 
-}
+};

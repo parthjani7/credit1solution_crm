@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::create('crm_admins', function (Blueprint $table) {
             $table->id();
-			$table->string("token",45)->nullable();
-			$table->string("username");
-			$table->string("password");
-			$table->string("email")->unique();
-			$table->integer("user_state",1);
-            $table->string("status",100)->nullable();
+            $table->string("username");
+            $table->string("password");
+            $table->string("email")->unique();
+            $table->tinyInteger("user_state");
+            $table->string('token')->nullable();
+            $table->string('status', 100)->nullable();
             $table->string('role', 50);
-            $table->integer("login_attemps")->default(0);
+            $table->tinyInteger("login_attemps")->default(0);
 
-			$table->timestamps();
+            $table->timestamps();
         });
     }
 

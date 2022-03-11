@@ -31,11 +31,10 @@ return new class extends Migration
             $table->string('contact_information');
             $table->string('secondary_zip_code');
             $table->string('billing_address');
-            $table->timestamps();
             $table->string("account_type",100)->default("Checking Account");
             $table->string("package",100);
             $table->date('package_start');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

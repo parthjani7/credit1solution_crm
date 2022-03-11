@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotificationSubscribers extends Migration {
+return new class extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class CreateNotificationSubscribers extends Migration {
 	{
 		Schema::create('notification_subscriber', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->id();
 			$table->string("email");
 			$table->tinyInteger("included");
 			$table->timestamps();
@@ -29,7 +29,7 @@ class CreateNotificationSubscribers extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('notification_subscriber');
+		Schema::dropIfExists('notification_subscriber');
 	}
 
-}
+};

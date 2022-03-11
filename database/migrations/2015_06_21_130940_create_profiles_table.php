@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProfilesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +14,8 @@ class CreateProfilesTable extends Migration
     public function up()
     {
         Schema::create('profiles', function (Blueprint $table) {
-
-            $table->engine = 'InnoDB';
-
-            $table->increments('id');
-            $table->integer('user_id')->unsigned()->unique('user_id', 'user_profiles_user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
+            $table->id();
+            $table->unsignedBigInteger('user_id')->unique();
 
             $table->string('fname', 60)->nullable()->comment('First Name');
             $table->string('mname', 60)->nullable()->comment('Middle Name');
@@ -45,8 +40,9 @@ class CreateProfilesTable extends Migration
             $table->string('hau', 30)->nullable()->comment('How Did You Hear About Us');
             $table->string('in', 30)->nullable()->comment('What are you interested In');
             $table->string('btc', 30)->nullable()->comment('Best time to contact you?');
-
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -57,6 +53,6 @@ class CreateProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('profiles');
+        Schema::dropIfExists('profiles');
     }
-}
+};
