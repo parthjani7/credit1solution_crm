@@ -20,6 +20,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Laststep;
 use App\Models\NotifSub;
 use App\Models\EmailDetail;
+use App\Models\Slider;
 use App\Services\ContractAgreementService;
 //use PayPal\Rest\ApiContext;
 //use PayPal\Auth\OAuthTokenCredential;
@@ -763,8 +764,7 @@ class SignupController  extends Controller
         $clients_reviews = DB::table('clients_reviews_slider')
             ->get()->toArray();
 
-        $why_us = DB::table('slider')
-            ->where('type', '=', 'why_us')
+        $why_us = Slider::where('type', '=', 'why_us')
             ->get()->toArray();
         $whyUS = array();
         for ($i = 0; $i < count($why_us); $i += 3) {
@@ -777,8 +777,7 @@ class SignupController  extends Controller
             $whyUS[] = $item;
         }
 
-        $main_slider = DB::table('slider')
-            ->where('type', '=', 'main')
+        $main_slider = Slider::where('type', '=', 'main')
             ->get()->toArray();
         $logo = DB::table('logo')
             ->select('name', 'image AS val')
