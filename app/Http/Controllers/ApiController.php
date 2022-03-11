@@ -507,33 +507,41 @@ class ApiController extends Controller{
 	}
 
 	public function postCreatecrmadmin(Request $request){
-		$input = $request->all();
-		$admin = CrmAdmin::where("email","=",$input["email"]);
-		if($admin->count()!=0)
-			return $this->errorResponse("User already registered!");
 
-		$crm = new CrmAdmin;
-		$crm->email = $input["email"];
-		$crm->password = "";
-		$crm->role  = $input["role"];
-		$crm->username = "";
-		$crm->status = "invited";
-		$random = Str::random(45);
-		$crm->token = $random;
-		$url = URL::to("/crm/signup/".$random);
+        $admin = DB::transaction(function() use($request) {
 
-		$mailData = array();
-		$mailData["to"] = $input["email"];
-		$mailData["url"] = $url ;
+            $admin = CrmAdmin::whereEmail($request->email);
+            if($admin->count()!=0)
+                return $this->errorResponse("User already registered!");
 
-		Mail::queue('emails.signup', $mailData, function($message) use ($input){
-		   $message->to($input["email"], 'Rujul Solanki')->subject("Welcome to Credit1solutions.com CRM");
-		});
+            $random = Str::random(45);
 
-        if($crm->save())
-		 	return $this->validResponse( $crm->toArray());
-        else
-		 	return $this->errorResponse("Unable to create user");
+            $admin = CrmAdmin::create([
+                $request->only('email','role') + [
+                    'password' => "",
+                    'username' => "",
+                    'status' => "invited",
+                    'token' => $random
+                ]
+            ]);
+
+            $mailData = [
+                "to" => $request->email,
+                "url" => URL::to("/crm/signup/".$random)
+            ];
+
+            Mail::queue('emails.signup', $mailData, function($message) use ($request){
+               $message->to($request->email, 'Rujul Solanki')->subject("Welcome to Credit1solutions.com CRM");
+            });
+
+            return $admin;
+        });
+
+        if($admin) {
+            return $this->validResponse( $admin->toArray());
+        }
+
+        return $this->errorResponse("Unable to create user");
 	}
 
 	public function postChangeaccess(Request $request){
