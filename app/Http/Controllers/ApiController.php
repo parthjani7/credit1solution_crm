@@ -8,7 +8,7 @@ use App\Models\Laststep;
 use App\Models\Crmadmins;
 use App\Models\ContractAgreementSection;
 use App\Models\NotifSub;
-use App\Models\EmailDetails;
+use App\Models\EmailDetail;
 use App\Services\ContractAgreementService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -578,8 +578,8 @@ class ApiController extends Controller{
 	}
 
 	public function emaildetails(){
-		$receipt = EmailDetails::where("type","=","receipt");
-		$notifs = EmailDetails::where("type","=","notification");
+		$receipt = EmailDetail::where("type","=","receipt");
+		$notifs = EmailDetail::where("type","=","notification");
 		$emails = NotifSub::all();
 		$responseData = ["receipt"=>[],"notification"=>[]];
 
@@ -593,9 +593,9 @@ class ApiController extends Controller{
 
 	public function postCreateemaildetails(Request $request){
 		$inputs = $request->all();
-		$emailObj = EmailDetails::where("type","=",$inputs["data"]["type"]);
+		$emailObj = EmailDetail::where("type","=",$inputs["data"]["type"]);
 		if($emailObj->count()==0){
-			EmailDetails::create($inputs['data']);
+			EmailDetail::create($inputs['data']);
 			return $this->validResponse("success");
 		}
 		$emailObj = $emailObj->first();

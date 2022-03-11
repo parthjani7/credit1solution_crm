@@ -19,7 +19,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Laststep;
 use App\Models\NotifSub;
-use App\Models\EmailDetails;
+use App\Models\EmailDetail;
 use App\Services\ContractAgreementService;
 //use PayPal\Rest\ApiContext;
 //use PayPal\Auth\OAuthTokenCredential;
