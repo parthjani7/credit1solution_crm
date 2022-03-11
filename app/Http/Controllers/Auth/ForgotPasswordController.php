@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Crmadmins;
+use App\Models\CrmAdmin;
 use App\Models\CrmPasswordReset;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
@@ -35,7 +35,7 @@ class ForgotPasswordController extends Controller
     {
         $inputs = $request->all();
 
-        $admin = Crmadmins::whereRaw("email = ? and status='active'", array($inputs['email']));
+        $admin = CrmAdmin::whereRaw("email = ? and status='active'", array($inputs['email']));
         if ($admin->count() == 0) {
             return view("crm.forgotpassword")->with('errormessage', "User doesn't exist");
         }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Crmadmins;
+use App\Models\CrmAdmin;
 use App\Models\CrmPasswordReset;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -42,7 +42,7 @@ class ResetPasswordController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $admin = Crmadmins::whereEmail($reset->email)->active()->first();
+        $admin = CrmAdmin::whereEmail($reset->email)->active()->first();
         if ($admin->count() == 0) {
             abort(403, 'Unauthorized action.');
         }
@@ -59,7 +59,7 @@ class ResetPasswordController extends Controller
             'password' => 'required|confirmed|min:8',
         ])->validate();
 
-        $admin = Crmadmins::whereEmail($request->email)->active()->first();
+        $admin = CrmAdmin::whereEmail($request->email)->active()->first();
         if ($admin?->count() == 0) {
             abort(403, 'Unauthorized action.');
         }

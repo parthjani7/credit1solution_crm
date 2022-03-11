@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Crmadmins;
+use App\Models\CrmAdmin;
 
 return [
 
@@ -72,7 +72,7 @@ return [
         ],
         'crm_admins' => [
             'driver' => 'eloquent',
-            'model' => Crmadmins::class,
+            'model' => CrmAdmin::class,
         ],
 
         // 'users' => [

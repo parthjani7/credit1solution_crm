@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Crmadmins;
+use App\Models\CrmAdmin;
 use App\Models\CrmPasswordReset;
 use App\Http\Requests\LoginCrmRequest;
 use Illuminate\Http\Request;

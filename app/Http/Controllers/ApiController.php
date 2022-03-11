@@ -5,7 +5,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Profile;
 use App\Models\Laststep;
-use App\Models\Crmadmins;
+use App\Models\CrmAdmin;
 use App\Models\ContractAgreementSection;
 use App\Models\NotifSub;
 use App\Models\EmailDetail;
@@ -508,11 +508,11 @@ class ApiController extends Controller{
 
 	public function postCreatecrmadmin(Request $request){
 		$input = $request->all();
-		$admin = Crmadmins::where("email","=",$input["email"]);
+		$admin = CrmAdmin::where("email","=",$input["email"]);
 		if($admin->count()!=0)
 			return $this->errorResponse("User already registered!");
 
-		$crm = new Crmadmins;
+		$crm = new CrmAdmin;
 		$crm->email = $input["email"];
 		$crm->password = "";
 		$crm->role  = $input["role"];
@@ -538,7 +538,7 @@ class ApiController extends Controller{
 
 	public function postChangeaccess(Request $request){
 		$input = $request->all();
-		$admin = Crmadmins::where("id","=",$input["id"]);
+		$admin = CrmAdmin::where("id","=",$input["id"]);
 		if($admin->count()==0)
 			return $this->errorResponse("No such user!");
 		$admin = $admin->first();
@@ -549,13 +549,13 @@ class ApiController extends Controller{
 
 	public function postDeletecrmadmin(Request $request){
 		$input = $request->all();
-		Crmadmins::where("id","=",$input["id"])->delete();
+		CrmAdmin::where("id","=",$input["id"])->delete();
 		return $this->validResponse("success");
 	}
 
 	public function postUnblockcrmadmin(Request $request){
 		$input = $request->all();
-		$admin = Crmadmins::where("id","=",$input["id"]);
+		$admin = CrmAdmin::where("id","=",$input["id"]);
 		$admin = $admin->first();
 		$admin->status = 'active';
 		$admin->login_attemps = 0;
@@ -565,7 +565,7 @@ class ApiController extends Controller{
 
 
 	public function crmadmins(){
-		$crmadmins = Crmadmins::all();
+		$crmadmins = CrmAdmin::all();
 		$responseData = ["invitations"=>[],"admins"=>[]];
 		foreach ($crmadmins as $admin ) {
             if($admin->status == 'invited'){
@@ -659,7 +659,7 @@ class ApiController extends Controller{
 
 	public function postEdituser(Request $request){
 		$input = $request->all();
-		$user =  Crmadmins::where("id","=",$input["data"]["id"]);
+		$user =  CrmAdmin::where("id","=",$input["data"]["id"]);
 		if($user->count()==0)
 			return $this->errorResponse("User doesn't exist");
 		$user = $user->first();
