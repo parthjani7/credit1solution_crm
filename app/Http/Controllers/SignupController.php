@@ -198,6 +198,7 @@ class SignupController  extends Controller
             session()->put($this->current_step, "step1");
 
         $states = $this->getStateList();
+
         if (session()->has($this->form_session)) {
             $data = session()->get($this->form_session);
             return view('new_auth.register', [
@@ -253,78 +254,80 @@ class SignupController  extends Controller
     {
         set_time_limit(300);
 
+        DB::transaction(function () use($request) {
 
-        $input = $request->all();
-        $input["receipt"] = [];
-        $input["receipt"]  = $this->returnRecipient();
-        $input["receipt"]["to"] = $input["step1_email"];
-        $input["notification"] = $this->returnNotification();
+            $input = $request->all();
 
-        // dd(["receiptc"=>$input["receipt"] ,"notification"=>$input["notification"]]);
+            $input["receipt"]  = $this->returnRecipient();
+            $input["receipt"]["to"] = $input["step1_email"];
+            $input["notification"] = $this->returnNotification();
 
-        $input["date"] = Carbon::now()->toFormattedDateString();
-        $input["service_date"] = Carbon::now()->addDays(35)->toFormattedDateString();
-        $sessionData = session($this->form_session);
+            // dd(["receiptc"=>$input["receipt"] ,"notification"=>$input["notification"]]);
 
-        $profile = $this->create($sessionData["step1"]);
-        $this->createOrders($sessionData["step2"], $profile);
-        $this->createLaststep($input, $profile);
+            $input["date"] = Carbon::now()->toFormattedDateString();
+            $input["service_date"] = Carbon::now()->addDays(35)->toFormattedDateString();
+            $sessionData = session($this->form_session);
 
-        $states = $this->getStateList();
-        $input["step1_state_info"] = $states[$input["step1_state"]];
-        $packageDate = explode("-", $input["step2_packagedate"] . "");
-        $then = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
-        $after = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
-        $input["credit_report_date"] = Carbon::now()->toFormattedDateString() . " " . Carbon::now()->toTimeString();
-        $input["first_payment_date"] = $then->toFormattedDateString();
-        $input["service_start_date"] = $then->addDays(30)->toFormattedDateString();
-        $input["today"] = $this->formatDate(Carbon::now()->toDateString());
-        $input["three_today"] = $this->formatDate(Carbon::now()->addDays(3)->toDateString());
-        $input["fpd_pdf"] = $input["first_payment_date"];
-        $input["ssd_pdf"] =   $input["service_start_date"];
-        $input["crd_pdf"] = Carbon::now()->toFormattedDateString();
-        $input["signature"] = explode("-", $input["ssn"])[2];
-        $input["agreement_date"] = Carbon::now()->format('jS \d\a\y \\of F') . ", " . substr(Carbon::now()->format('Y'), 0, 2) . "{" . substr(Carbon::now()->format('Y'), 2, 4) . "}";
-        $tempDate = array();
-        for ($i = 4; $i <= 10; $i++) {
-            $tempDate[$i . ""] = $i . "th";
-        }
-        $selectedDay = array_merge(["1" => "1st", "2" => "2nd", "3" => "3rd"], $tempDate);
-        $input["day_diff"] = $selectedDay[$after->diffInDays(Carbon::now()) - 1];
-        $input["package_image"] = ($input["step2_package"] == "Comprehensive") ? URL::asset("/images") . '/cs.jpg' : URL::asset("/images") . '/fss.jpg';
-        // dd($input);
+            $profile = $this->create($sessionData["step1"]);
+            $this->createOrders($sessionData["step2"], $profile);
+            $this->createLaststep($input, $profile);
 
-        $u = "_";
-        if ($input["step1_mname"] != "")
-            $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_mname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
-        else
-            $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
+            $states = $this->getStateList();
+            $input["step1_state_info"] = $states[$input["step1_state"]];
+            $packageDate = explode("-", $input["step2_packagedate"] . "");
+            $then = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
+            $after = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
+            $input["credit_report_date"] = Carbon::now()->toFormattedDateString() . " " . Carbon::now()->toTimeString();
+            $input["first_payment_date"] = $then->toFormattedDateString();
+            $input["service_start_date"] = $then->addDays(30)->toFormattedDateString();
+            $input["today"] = $this->formatDate(Carbon::now()->toDateString());
+            $input["three_today"] = $this->formatDate(Carbon::now()->addDays(3)->toDateString());
+            $input["fpd_pdf"] = $input["first_payment_date"];
+            $input["ssd_pdf"] =   $input["service_start_date"];
+            $input["crd_pdf"] = Carbon::now()->toFormattedDateString();
+            $input["signature"] = explode("-", $input["ssn"])[2];
+            $input["agreement_date"] = Carbon::now()->format('jS \d\a\y \\of F') . ", " . substr(Carbon::now()->format('Y'), 0, 2) . "{" . substr(Carbon::now()->format('Y'), 2, 4) . "}";
+            $tempDate = array();
+            for ($i = 4; $i <= 10; $i++) {
+                $tempDate[$i . ""] = $i . "th";
+            }
+            $selectedDay = array_merge(["1" => "1st", "2" => "2nd", "3" => "3rd"], $tempDate);
+            $input["day_diff"] = $selectedDay[$after->diffInDays(Carbon::now()) - 1];
+            $input["package_image"] = ($input["step2_package"] == "Comprehensive") ? URL::asset("/images") . '/cs.jpg' : URL::asset("/images") . '/fss.jpg';
+            // dd($input);
 
-
-        if ($input["receipt"]["include_data"] || $input["notification"]["inlcude_data"]) {
-            $input['pdf_content'] = $this->contractAgreementService->getAll($input);
-            $pdf = PDF::loadView('pdf.agreement', $input);
-            $paper_size = array(0, 0, 790, 850);
-            $pdf->setPaper($paper_size, "portrait");
-            // return $pdf->download("agreement.pdf");
-            $pdf->save($filename);
-        }
+            $u = "_";
+            if ($input["step1_mname"] != "")
+                $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_mname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
+            else
+                $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
 
 
-        Mail::send('step3.email', $input, function ($message) use ($input) {
+            if ($input["receipt"]["include_data"] || $input["notification"]["inlcude_data"]) {
+                $input['pdf_content'] = $this->contractAgreementService->getAll($input);
+                $pdf = PDF::loadView('pdf.agreement', $input);
+                $paper_size = array(0, 0, 790, 850);
+                $pdf->setPaper($paper_size, "portrait");
+                // return $pdf->download("agreement.pdf");
+                $pdf->save($filename);
+            }
 
-            $message->to($input["notification"]["email"], 'Credit1Solutions')->subject($input["notification"]["subject"]);
+
+            Mail::send('step3.email', $input, function ($message) use ($input) {
+
+                $message->to($input["notification"]["email"], 'Credit1Solutions')->subject($input["notification"]["subject"]);
+            });
+
+            Mail::send('step3.receipient', $input, function ($message) use ($input) {
+
+
+                $message->to($input["receipt"]["to"], 'Credit1Solutions')->subject($input["receipt"]["subject"])->from($input["receipt"]["from"]);
+            });
+
+            unlink($filename);
+            session()->pull($this->form_session);
+            session()->pull($this->current_step);
         });
-
-        Mail::send('step3.receipient', $input, function ($message) use ($input) {
-
-
-            $message->to($input["receipt"]["to"], 'Credit1Solutions')->subject($input["receipt"]["subject"])->from($input["receipt"]["from"]);
-        });
-
-        unlink($filename);
-        session()->pull($this->form_session);
-        session()->pull($this->current_step);
 
         // return "thanks";
         return redirect()->to("/final");
@@ -893,9 +896,9 @@ class SignupController  extends Controller
         ];
     }
 
-    protected function returnRecipient()
+    protected function returnRecipient(): array
     {
-        $receipt = EmailDetails::where("type", "=", "receipt");
+        $receipt = EmailDetail::where("type", "=", "receipt");
         $responseData = [];
 
         if ($receipt->count() != 0) {
@@ -915,9 +918,9 @@ class SignupController  extends Controller
     }
 
 
-    protected function returnNotification()
+    protected function returnNotification(): array
     {
-        $notification = EmailDetails::whereType("notification");
+        $notification = EmailDetail::whereType("notification");
         $responseData = [];
         if ($notification->count() != 0) {
             $notification = $notification->first();
