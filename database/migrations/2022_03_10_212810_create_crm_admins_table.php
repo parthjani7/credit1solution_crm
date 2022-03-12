@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('crm_admins', function (Blueprint $table) {
             $table->id();
-            $table->string("username");
-            $table->string("password");
+            $table->string("username")->nullable();
+            $table->string("password")->nullable();
             $table->string("email")->unique();
             $table->tinyInteger("user_state");
             $table->string('token')->nullable();
