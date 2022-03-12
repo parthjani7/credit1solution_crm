@@ -576,10 +576,10 @@ class ApiController extends Controller
     public function postChangeaccess(Request $request)
     {
         $input = $request->all();
-        $admin = CrmAdmin::where("id", "=", $input["id"]);
-        if ($admin->count() == 0)
+        $admin = CrmAdmin::find($input["id"]);
+        if (!$admin)
             return $this->errorResponse("No such user!");
-        $admin = $admin->first();
+
         $admin->role = $input["role"];
         return $this->validResponse($admin->save());
     }
@@ -587,18 +587,18 @@ class ApiController extends Controller
     public function postDeletecrmadmin(Request $request)
     {
         $input = $request->all();
-        CrmAdmin::where("id", "=", $input["id"])->delete();
+        CrmAdmin::find($input["id"])->delete();
         return $this->validResponse("success");
     }
 
     public function postUnblockcrmadmin(Request $request)
     {
         $input = $request->all();
-        $admin = CrmAdmin::where("id", "=", $input["id"]);
-        $admin = $admin->first();
-        $admin->status = 'active';
-        $admin->login_attemps = 0;
-        $admin->save();
+        $admin = CrmAdmin::find($input["id"]);
+        $admin->update([
+            'status' => 'active',
+            'login_attemps' => 0
+        ]);
         return $this->validResponse("success");
     }
 
@@ -619,8 +619,8 @@ class ApiController extends Controller
 
     public function emaildetails()
     {
-        $receipt = EmailDetail::where("type", "=", "receipt");
-        $notifs = EmailDetail::where("type", "=", "notification");
+        $receipt = EmailDetail::whereType("receipt");
+        $notifs = EmailDetail::whereType("notification");
         $emails = NotifSub::all();
         $responseData = ["receipt" => [], "notification" => []];
 
@@ -634,17 +634,19 @@ class ApiController extends Controller
     public function postCreateemaildetails(Request $request)
     {
         $inputs = $request->all();
-        $emailObj = EmailDetail::where("type", "=", $inputs["data"]["type"]);
+        $emailObj = EmailDetail::whereType($inputs["data"]["type"]);
         if ($emailObj->count() == 0) {
             EmailDetail::create($inputs['data']);
             return $this->validResponse("success");
         }
-        $emailObj = $emailObj->first();
-        $emailObj->to_from = $inputs["data"]["to_from"];
-        $emailObj->subject = $inputs["data"]["subject"];
-        $emailObj->message = $inputs["data"]["message"];
-        $emailObj->include_data = intval($inputs["data"]["include_data"]);
-        $emailObj->save();
+
+        $emailObj->first()->update([
+            'to_from' => $inputs["data"]["to_from"],
+            'subject' => $inputs["data"]["subject"],
+            'message' => $inputs["data"]["message"],
+            'include_data' => intval($inputs["data"]["include_data"]),
+        ]);
+
         return $this->validResponse("success");
     }
 
@@ -689,11 +691,10 @@ class ApiController extends Controller
     public function postChangeemailaccess(Request $request)
     {
         $input = $request->all();
-        $notification = NotifSub::where("id", "=", $input["id"]);
-        if ($notification->count() == 0)
+        $notification = NotifSub::find($input["id"]);
+        if (!$notification)
             return $this->errorResponse("error");
-        $notification = $notification->first();
-        $notification->included = ($notification->included == 0) ? 1 : 0;
+        $notification->included = !$notification->included;
         $notification->save();
         return $this->validResponse("success");
     }
@@ -708,15 +709,16 @@ class ApiController extends Controller
     public function postEdituser(Request $request)
     {
         $input = $request->all();
-        $user =  CrmAdmin::where("id", "=", $input["data"]["id"]);
-        if ($user->count() == 0)
+        $user =  CrmAdmin::find($input["data"]["id"]);
+        if (!$user)
             return $this->errorResponse("User doesn't exist");
-        $user = $user->first();
 
-        $user->username = $input["data"]["username"];
-        $user->password = ($input["data"]["password"] != "") ? Hash::make($input["data"]["password"]) : $user->password;
-        $user->email = $input["data"]["email"];
-        $user->save();
+        $user->update([
+            'username' => $input["data"]["username"],
+            'password' => ($input["data"]["password"] != "") ? Hash::make($input["data"]["password"]) : $user->password,
+            'email' => $input["data"]["email"],
+        ]);
+
         session()->forget("admin");
         session("admin", ["id" => $user->id, "username" => $user->username, "email" => $user->email, "role" => $user->role]);
         return $this->validResponse("success");
@@ -753,7 +755,7 @@ class ApiController extends Controller
     public function postEditagreementsection(Request $request)
     {
         $input = $request->all();
-        $contractAgreementSection = ContractAgreementSection::where("id", "=", $input["id"]);
+        $contractAgreementSection = ContractAgreementSection::find($input["id"]);
         if ($contractAgreementSection->count() == 0)
             return $contractAgreementSection->errorResponse("Contract Agreement Section doesn't exist");
         $contractAgreementSection = $contractAgreementSection->first();
