@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Arr;
 
 class ApiController extends Controller
 {
@@ -544,22 +545,22 @@ class ApiController extends Controller
 
             $random = Str::random(45);
 
-            $admin = CrmAdmin::create([
+            $admin = CrmAdmin::create(
                 $request->only('email', 'role') + [
                     'password' => "",
                     'username' => "",
                     'status' => "invited",
                     'token' => $random
                 ]
-            ]);
+            );
 
             $mailData = [
-                "to" => $request->email,
-                "url" => URL::to("/crm/signup/" . $random)
+                "to" => $admin->email,
+                "url" => URL::to("/signup/" . $random)
             ];
 
-            Mail::queue('emails.signup', $mailData, function ($message) use ($request) {
-                $message->to($request->email, 'Rujul Solanki')->subject("Welcome to Credit1solutions.com CRM");
+            Mail::send('emails.signup', $mailData, function ($message) use ($admin) {
+                $message->to($admin->email, Arr::first(explode('@', $admin->email)))->subject("Welcome to Credit1solutions.com CRM");
             });
 
             return $admin;
