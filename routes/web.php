@@ -8,11 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Carbon\Carbon;
-use App\Services\ContractAgreementService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,77 +32,6 @@ Route::post('/step3', [SignupController::class, 'postRegisterStep3']);
 
 Route::get("/final", [SignupController::class, 'getFinal']);
 Route::get('/thank_you', [SignupController::class, 'thank_you']);
-
-Route::get("/genpdf", function (ContractAgreementService $contractAgreementService) {
-    $input = [
-        "step1_fname" => "Courtney",
-        "step1_serialno" => "917796248-NZU",
-        "step1_mname" => "Crystal",
-        "step1_lname" => "Rivers",
-        "step1_paddress" => "392 shelby ave apt 6",
-        "step1_city" => "Radcliff",
-        "step1_state" => "KY",
-        "step1_zip" => "40160",
-        "step1_mpaddress" => "392 shelby ave apt 6",
-        "step1_mcity" => "Radcliff",
-        "step1_mstate" => "KY",
-        "step1_mzip" => "40160",
-        "step1_hno" => "",
-        "step1_mno" => "912-210-1424",
-        "step1_email" => "ccbarker86@gmail.com",
-        "step2_packagedate" => "2015-7-23",
-        "step2_package" => "FreshStart",
-        "step2_card_number" => "4236-9810-0312-3303",
-        "step2_month" => "06",
-        "step2_year" => "17",
-        "step2_cvv" => "509",
-        "step2_full_name" => "Courtney Crystal Rivers",
-        "step2_card_type" => "Visa",
-        "step2_account_type" => "Checking Account",
-        "step2_bank_name" => "FORT KNOX CREDITUNION",
-        "step2_routing_number" => "283978425",
-        "step2_account_number" => "10092044",
-        "month" => "11",
-        "day" => "8",
-        "year" => "1986",
-        "dls" => "KY",
-        "dln" => "B05-280-537",
-        "ssn" => "435-71-2343",
-    ];
-
-    $dateArray =   explode("-", Carbon::createFromDate(2015, 7, 10)->toDateString());
-    $todayInput = $dateArray[1] . "/" . $dateArray[2] . "/" . $dateArray[0];
-    $dateArray = explode("-", Carbon::createFromDate(2015, 7, 10)->addDays(3)->toDateString());
-    $threeInput = $dateArray[1] . "/" . $dateArray[2] . "/" . $dateArray[0];
-    $input["step1_state_info"] = "Kentucky";
-    $packageDate = explode("-", $input["step2_packagedate"] . "");
-    $then = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
-    $after = Carbon::createFromDate($packageDate[0], $packageDate[1], $packageDate[2]);
-    $input["credit_report_date"] = "Jul 10, 2015 17:17:56";
-    $input["first_payment_date"] = $then->toFormattedDateString();
-    $input["service_start_date"] = $then->addDays(30)->toFormattedDateString();
-    $input["today"] = $todayInput;
-    $input["three_today"] = $threeInput;
-    $input["fpd_pdf"] = $input["first_payment_date"];
-    $input["ssd_pdf"] =   $input["service_start_date"];
-    $input["crd_pdf"] = Carbon::createFromDate(2015, 7, 10)->toFormattedDateString();
-    $input["signature"] = explode("-", $input["ssn"])[2];
-    $input["agreement_date"] = Carbon::createFromDate(2015, 7, 10)->format('jS \d\a\y \\of F') . ", " . substr(Carbon::createFromDate(2015, 7, 10)->format('Y'), 0, 2) . "{" . substr(Carbon::createFromDate(2015, 7, 10)->format('Y'), 2, 4) . "}";
-    $tempDate = array();
-    for ($i = 4; $i <= 15; $i++) {
-        $tempDate[$i . ""] = $i . "th";
-    }
-    $selectedDay = array_merge(["1" => "1st", "2" => "2nd", "3" => "3rd"], $tempDate);
-    $input["day_diff"] = $selectedDay[$after->diffInDays(Carbon::createFromDate(2015, 7, 10)) - 1];
-
-    $input["package_image"] = ($input["step2_package"] == "Comprehensive") ? URL::asset("/images") . '/cs.jpg' : URL::asset("/images") . '/fss.jpg';
-    // dd($input);
-    $input['pdf_content'] = $contractAgreementService->getAll($input);
-    $pdf = Pdf::loadView('pdf.agreement', $input);
-    $paper_size = array(0, 0, 790, 850);
-    $pdf->setPaper($paper_size, "portrait");
-    return $pdf->download("agreement.pdf");
-});
 
 Auth::routes([
     'login'    => false,
