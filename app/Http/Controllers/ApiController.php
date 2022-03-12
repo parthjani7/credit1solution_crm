@@ -368,7 +368,7 @@ class ApiController extends Controller
             $userData = User::all();
         } else {
 
-            $userData = User::where("created_at", ">=", $this->retDate($inputs["date"]))->get()->toArray();
+            $userData = User::where("created_at", ">=", $this->retDate($inputs["date"]))->get();
         }
 
         $users = array();
