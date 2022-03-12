@@ -68,4 +68,8 @@ use Illuminate\Support\Facades\Route;
     Route::post('changeemailaccess', [ApiController::class, 'postChangeemailaccess'])->name('changeemailaccess.store');
     Route::post('removeuser', [ApiController::class, 'postRemoveuser'])->name('removeuser.store');
     Route::post('edituser', [ApiController::class, 'postEdituser'])->name('edituser.store');
+
+    Route::post('editagreementsection', [ApiController::class, 'postEditagreementsection'])->name('editagreementsection.store');
+    Route::post('createagreementsection', [ApiController::class, 'postCreateagreementsection'])->name('createagreementsection.store');
+    Route::post('removeagreementsection', [ApiController::class, 'postRemoveagreementsection'])->name('removeagreementsection.store');
 // });
