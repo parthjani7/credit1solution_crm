@@ -45,7 +45,7 @@
 			</div>
 			<div class="form-group">
 				<div class="checkbox col-lg-offset-3">
-				      <label><input type="checkbox" ng-model="receipt.include_data" ng-true-value="'1'" ng-false-value="'0'"> Include submitted data</label>
+				      <label><input type="checkbox" ng-model="receipt.include_data" ng-true-value="1" ng-false-value="0"> Include submitted data</label>
 				</div>
 				<button class="btn btn-primary col-lg-offset-9 col-lg-3" ng-click="saveReceipt()">Save</button>
 			</div>
@@ -69,7 +69,7 @@
 					    	<tbody>
 					    		<tr ng-repeat="email in emails">
 					    		<td>(( email.email ))</td>
-					    		<td><input type="checkbox"  ng-model="email.included"  ng-true-value="'1'" ng-false-value="'0'" ng-click="updateEmail(email)"></td>
+					    		<td><input type="checkbox"  ng-model="email.included"  ng-true-value="1" ng-false-value="0" ng-click="updateEmail(email)"></td>
 					    		<td><a class="delete-x" ng-click="delEmail(email)"><i class="fa fa-times-circle-o"></i></a></td>
 					    		</tr>
 					    	</tbody>
