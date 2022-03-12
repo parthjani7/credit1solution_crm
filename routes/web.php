@@ -45,6 +45,10 @@ Auth::routes([
 Route::middleware(['guest:admin'])->group(function () {
     Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/', [LoginController::class, 'login']);
+
+    Route::get("/signup/{token}", [SignupController::class, 'verifyEmail']);
+    Route::post("/signup", [SignupController::class, 'signup']);
+
 });
 
 Route::middleware(['auth:admin'])->as('admin.')->group(function () {

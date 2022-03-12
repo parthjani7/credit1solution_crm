@@ -11,6 +11,7 @@ use AuthorizeNetAIM;
 use AuthorizeNetARB;
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use App\Models\CrmAdmin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
@@ -22,6 +23,8 @@ use App\Models\NotifSub;
 use App\Models\EmailDetail;
 use App\Models\Slider;
 use App\Services\ContractAgreementService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 //use PayPal\Rest\ApiContext;
 //use PayPal\Auth\OAuthTokenCredential;
 //use PayPal\Api\Amount;
@@ -255,7 +258,7 @@ class SignupController  extends Controller
     {
         set_time_limit(300);
 
-        DB::transaction(function () use($request) {
+        DB::transaction(function () use ($request) {
 
             $input = $request->all();
 
@@ -949,5 +952,34 @@ class SignupController  extends Controller
     private function returnSerialNo()
     {
         return rand(100000000, 999999999) . "-" . substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), rand(0, 21), 3);
+    }
+
+    public function verifyEmail($token)
+    {
+        $admin = CrmAdmin::whereToken($token);
+        if ($admin->count() == 0) {
+            return view("errors.503");
+        }
+        $error = session()->get("signuperror", "default");
+        $username = session()->get("user", "");
+
+        return view("crm.signup")->with("admin", $admin->first())->withExtra("CRM")->withErr($error)->withUsername($username);
+    }
+
+    public function signup(Request $request)
+    {
+        $inputs = $request->all();
+        if ($inputs["password"]  && $inputs["password"] != $inputs["conf_password"])
+            return redirect()->back()->with("signuperror", "Password doesn't match!")->withUser($inputs["username"]);
+
+        $crm = CrmAdmin::whereId($inputs["id"])->first();
+        $crm->token = NULL;
+        $crm->username = $inputs["username"];
+        $crm->password = Hash::make($inputs["password"]);
+        $crm->status = 'active';
+        $crm->save();
+
+        Auth::guard('admin')->login($crm);
+        return redirect()->route("login");
     }
 }
