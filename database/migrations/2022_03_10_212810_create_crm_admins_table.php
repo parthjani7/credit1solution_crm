@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("username")->nullable();
             $table->string("password")->nullable();
             $table->string("email")->unique();
-            $table->tinyInteger("user_state");
+            $table->tinyInteger("user_state")->default(0);
             $table->string('token')->nullable();
             $table->string('status', 100)->nullable();
             $table->string('role', 50);
