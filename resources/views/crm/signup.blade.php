@@ -3,7 +3,7 @@
 @section("content")
 <div class="login-box-body">
   <p class="login-box-msg">Sign up for CRM</p>
- <form method="POST" action="{{ url('/crm/signup') }}">
+ <form method="POST" action="{{ url('/signup') }}">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <input type="hidden" name="id" value="{{ $admin['id'] }}">
 
@@ -23,7 +23,7 @@
       <input type="password" name="conf_password" class="form-control" placeholder="Re enter Password" required/>
       <span class="glyphicon glyphicon-lock form-control-feedback"></span>
     </div>
-    <div class="row">      
+    <div class="row">
       <div class="col-xs-4">
         <button type="submit" class="btn btn-primary btn-block btn-flat">Sign up</button>
       </div><!-- /.col -->
@@ -33,7 +33,7 @@
 
   @if($err !="default")
     <div style="margin-top:20px;" class="login-box-body">
-      <ul>        
+      <ul>
           <li style="color:red">{!! $err !!}</li>
       </ul>
     </div>
