@@ -13,6 +13,7 @@ use App\Models\NotifSub;
 use App\Models\EmailDetail;
 use App\Models\Slider;
 use App\Services\ContractAgreementService;
+use App\Services\Export\CustomerExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -424,21 +425,20 @@ class ApiController extends Controller
         set_time_limit(300);
         $input = $request->all();
 
-        if ($input["type"] == "pdf") {
+        if ($input["type"] === "pdf") {
             $filen = $this->genPdf($this->retInputs($input["data"], $input["extra"]));
             return $this->validResponse(["url" => URL::asset("pdfs") . "/" . $filen, "filename" => $filen]);
-        } else if ($input["type"] == "xls") {
-            $userData = array();
-            $userData = $input["data"];
-            $filename = (time() + rand(0, 5000)) . "";
+        } else if ($input["type"] === "xls") {
+            $filename = 'excel/' . (time() + rand(0, 5000)) . ".xls";
 
-            Excel::create($filename, function ($excel) use ($userData) {
-                $excel->sheet("User sheet", function ($sheet) use ($userData) {
-                    $sheet->setOrientation('landscape');
-                    $sheet->loadView('excel.exceldata')->with('userData', $userData);
-                });
-            })->store('xls',  public_path() . "/excel");
-            return $this->validResponse(["url" => URL::asset("excel") . "/" . $filename . ".xls", "filename" => $filename . ".xls"]);
+            Excel::store(
+                new CustomerExport($input["data"]),
+                $filename,
+                null,
+                \Maatwebsite\Excel\Excel::XLS
+            );
+
+            return $this->validResponse(["url" => URL::asset('/') . $filename, "filename" => $filename]);
         } else {
             return $this->errorResponse("Invalid input");
         }
