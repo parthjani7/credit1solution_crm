@@ -1,6 +1,8 @@
 <?php namespace App\Services;
 
 use App\Models\ContractAgreementSection;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\View\Compilers\BladeCompiler;
 use Wpb\StringBladeCompiler\StringView;
 
 class ContractAgreementService {
@@ -17,17 +19,8 @@ class ContractAgreementService {
         $agreementSections = array();
         foreach ($contractAgreementSections as $contractAgreementSection)
         {
-            $view = new StringView();
             $agreementSections[$contractAgreementSection['section_name']] =
-            $content = $view->make(
-                array(
-                    'template'  => $contractAgreementSection['content'],
-                    'cache_key' => $contractAgreementSection['section_name'].'_agreement',
-                    'updated_at' => 0
-                ),
-                $data
-            )->render();
-            $agreementSections[$contractAgreementSection['section_name']] = $content;
+            BladeCompiler::render($contractAgreementSection['content'], $data);
         }
         return $agreementSections;
     }
