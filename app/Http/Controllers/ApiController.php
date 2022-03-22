@@ -24,6 +24,7 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Blade;
 
 class ApiController extends Controller
 {
@@ -86,7 +87,7 @@ class ApiController extends Controller
             );
         }
 
-        $response = Slider::insert($insert);
+        Slider::insert($insert);
         $result = Slider::where('title', '=', $input["slider_title"])->get()->toArray();
         return $this->validResponse($result[0]);
     }
@@ -427,7 +428,7 @@ class ApiController extends Controller
 
         if ($input["type"] === "pdf") {
             $filen = $this->genPdf($this->retInputs($input["data"], $input["extra"]));
-            return $this->validResponse(["url" => URL::asset("pdfs") . "/" . $filen, "filename" => $filen]);
+            return $this->validResponse(["url" => URL::asset("pdf-documents") . "/" . $filen, "filename" => $filen]);
         } else if ($input["type"] === "xls") {
             $filename = 'excel/' . (time() + rand(0, 5000)) . ".xls";
 
@@ -447,9 +448,7 @@ class ApiController extends Controller
     private function genPdf($input)
     {
         $input['pdf_content'] = $this->contractAgreementService->getAll($input);
-        $pdf = Pdf::loadView('pdf.agreement', $input);
-        $paper_size = array(0, 0, 790, 850);
-        $pdf->setPaper($paper_size, "portrait");
+
         $name = $input["step1_serialno"] . ".pdf";
 
         $pdf = Pdf::loadHtml(Blade::render('pdf.agreement', $input))

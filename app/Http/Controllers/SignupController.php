@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Hash;
 //use PayPal\Api\PaymentExecution;
 //use PayPal\Api\Transaction;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class SignupController  extends Controller
