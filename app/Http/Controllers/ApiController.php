@@ -451,9 +451,21 @@ class ApiController extends Controller
         $paper_size = array(0, 0, 790, 850);
         $pdf->setPaper($paper_size, "portrait");
         $name = $input["step1_serialno"] . ".pdf";
-        $pdf->save(public_path() . "/pdfs/" . $name);
-        chmod(public_path() . "/pdfs/" . $name, 0777);
-        return $name;
+
+        $pdf = Pdf::loadHtml(Blade::render('pdf.agreement', $input))
+            ->setPaper([0, 0, 790, 850], "portrait")
+            ->setOptions([
+                'enable_remote' => true,
+                'isPhpEnabled' => true,
+                'isRemoteEnabled' => true,
+                'isJavascriptEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+            ]);
+
+            Storage::put('pdf-documents/'. $name, $pdf->output());
+
+            return $name;
     }
 
 

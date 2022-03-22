@@ -302,9 +302,9 @@ class SignupController  extends Controller
 
             $u = "_";
             if ($input["step1_mname"] != "")
-                $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_mname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
+                $filename = public_path() . "/pdf-documents/" . $input["step1_fname"] . $u . $input["step1_mname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
             else
-                $filename = public_path() . "/pdfs/" . $input["step1_fname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
+                $filename = public_path() . "/pdf-documents/" . $input["step1_fname"] . $u . $input["step1_lname"] . $u . $input['step1_serialno'] . ".pdf";
 
 
             if ($input["receipt"]["include_data"] || $input["notification"]["inlcude_data"]) {
@@ -313,7 +313,7 @@ class SignupController  extends Controller
                 $paper_size = array(0, 0, 790, 850);
                 $pdf->setPaper($paper_size, "portrait");
                 // return $pdf->download("agreement.pdf");
-                $pdf->save($filename);
+                Storage::put($filename, $pdf->output());
             }
 
 
