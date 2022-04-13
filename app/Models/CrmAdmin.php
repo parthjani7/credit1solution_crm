@@ -11,4 +11,9 @@ class CrmAdmin extends Authenticatable
     {
         return $query->whereStatus($value ?? 'active');
     }
+
+    public function getRememberTokenName()
+    {
+        return 'token';
+    }
 }
