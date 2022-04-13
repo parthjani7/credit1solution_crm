@@ -329,7 +329,9 @@ class SignupController  extends Controller
                 $message->to($input["receipt"]["to"], 'Credit1Solutions')->subject($input["receipt"]["subject"])->from($input["receipt"]["from"]);
             });
 
-            unlink($filename);
+            if (file_exists($filename)) {
+                unlink($filename);
+            }
             session()->pull($this->form_session);
             session()->pull($this->current_step);
         });
