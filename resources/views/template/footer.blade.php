@@ -454,7 +454,7 @@ retByName("packagedate").change(function(){
      });
 
      function setSecondaryInfo(){
-        retByName("contact_information").val( prevPage.fname+" "+(prevPage.mname || '')+" "+prevPage.lname);
+        retByName("contact_information").val(`${prevPage.fname} ${(prevPage.mname ? prevPage.mname + ' ' : '')}${prevPage.lname}`);
         retByName("billing_address").val(prevPage.paddress);
         retByName("secondary_zip_code").val(prevPage.zip);
      }
@@ -466,7 +466,7 @@ retByName("packagedate").change(function(){
      }
 
      function setPrimaryInfo(){
-        retByName("full_name").val( prevPage.fname+" "+(prevPage.mname || '')+" "+prevPage.lname);
+        retByName("full_name").val(`${prevPage.fname} ${(prevPage.mname ? prevPage.mname + ' ' : '')}${prevPage.lname}`);
         retByName("street_address").val(prevPage.paddress);
         retByName("primary_zip_code").val(prevPage.zip);
      }
