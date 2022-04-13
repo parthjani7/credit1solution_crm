@@ -69,7 +69,7 @@ return [
     'links' => [
         // public_path('storage') => storage_path('app/public'),
         public_path('excel') => storage_path('app/excel'),
-        public_path('pdf-documents') => storage_path('app/pdfs'),
+        public_path('pdf-documents') => storage_path('app/pdf-documents'),
     ],
 
 ];
