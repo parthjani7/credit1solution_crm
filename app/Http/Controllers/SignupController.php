@@ -768,8 +768,9 @@ class SignupController  extends Controller
         $clients_reviews = DB::table('clients_reviews_slider')
             ->get()->toArray();
 
-        $why_us = Slider::where('type', '=', 'why_us')
-            ->get()->toArray();
+        $why_us = Slider::whereType('why_us')
+            ->get();
+
         $whyUS = array();
         for ($i = 0; $i < count($why_us); $i += 3) {
             $item = array();
@@ -781,51 +782,51 @@ class SignupController  extends Controller
             $whyUS[] = $item;
         }
 
-        $main_slider = Slider::where('type', '=', 'main')
+        $main_slider = Slider::whereType('main')
             ->get()->toArray();
         $logo = DB::table('logo')
             ->select('name', 'image AS val')
             ->get()->toArray();
         $images = DB::table('images')
             ->select('name', 'image AS val')
-            ->where('position', '=', 'main')
+            ->wherePosition('main')
             ->get()->toArray();
         $content = DB::table('content')
             ->select('name', 'content AS val')
             ->get()->toArray();
         $customer_satisfaction = DB::table('content')
-            ->where('position', '=', 'customer_satisfaction')
+            ->wherePosition('customer_satisfaction')
             ->get()->toArray();
         $menu['header'] = DB::table('pages')
             ->select('name', 'url')
-            ->where('position', '=', 'header')
+            ->wherePosition('header')
             ->get()->toArray();
         $menu['you_trust_1'] = DB::table('pages')
             ->select('name', 'url')
-            ->where('position', '=', 'you_trust_1')
+            ->wherePosition('you_trust_1')
             ->get()->toArray();
         $menu['you_trust_2'] = DB::table('pages')
             ->select('name', 'url')
-            ->where('position', '=', 'you_trust_2')
+            ->wherePosition('you_trust_2')
             ->get()->toArray();
         $menu['footer_1'] = DB::table('pages')
             ->select('name', 'url')
-            ->where('position', '=', 'footer_1')
+            ->wherePosition('footer_1')
             ->get()->toArray();
         $menu['footer_2'] = DB::table('pages')
             ->select('name', 'url')
-            ->where('position', '=', 'footer_2')
+            ->wherePosition('footer_2')
             ->get()->toArray();
         $menu['footer_3'] = DB::table('pages')
             ->select('name', 'url')
-            ->where('position', '=', 'footer_3')
+            ->wherePosition('footer_3')
             ->get()->toArray();
         $menu['footer_4'] = DB::table('pages')
             ->select('name', 'url')
-            ->where('position', '=', 'footer_4')
+            ->wherePosition('footer_4')
             ->get()->toArray();
         $friends_logo = DB::table('images')
-            ->where('position', '=', 'footer-friends-logo')
+            ->wherePosition('footer-friends-logo')
             ->get()->toArray();
         $data = array();
         $dbData = array_merge($logo, $content, $images);
