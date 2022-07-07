@@ -320,14 +320,10 @@ class SignupController  extends Controller
 
 
             Mail::send('step3.email', $input, function ($message) use ($input) {
-
-                Log::info('email', ['to' => $input["notification"]["email"], 'sub' => $input["notification"]["subject"]]);
                 $message->to($input["notification"]["email"], 'Credit1Solutions')->subject($input["notification"]["subject"]);
             });
 
             Mail::send('step3.receipient', $input, function ($message) use ($input) {
-
-                Log::info('email', ['to' => $input["receipt"]["to"], 'sub' => $input["receipt"]["subject"], 'from' => $input["receipt"]["from"]]);
                 $message->to($input["receipt"]["to"], 'Credit1Solutions')->subject($input["receipt"]["subject"])->from($input["receipt"]["from"]);
             });
 
