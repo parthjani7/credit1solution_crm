@@ -25,6 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
@@ -462,9 +463,9 @@ class ApiController extends Controller
                 'isFontSubsettingEnabled' => true,
             ]);
 
-            Storage::put('pdf-documents/'. $name, $pdf->output());
+        Storage::put('pdf-documents/' . $name, $pdf->output());
 
-            return $name;
+        return $name;
     }
 
 
@@ -765,16 +766,28 @@ class ApiController extends Controller
 
     public function postEditagreementsection(Request $request)
     {
-        $input = $request->all();
-        $contractAgreementSection = ContractAgreementSection::find($input["id"]);
-        if ($contractAgreementSection->count() == 0)
-            return $contractAgreementSection->errorResponse("Contract Agreement Section doesn't exist");
-        $contractAgreementSection = $contractAgreementSection->first();
+        try {
+            DB::beginTransaction();
+            $input = $request->all();
+            $contractAgreementSection = ContractAgreementSection::find($input["id"]);
 
-        $contractAgreementSection->section_name = $input["section_name"];
-        $contractAgreementSection->section_description = $input["section_description"];
-        $contractAgreementSection->content = $input["content"];
-        $contractAgreementSection->save();
+            if ($contractAgreementSection->count() == 0)
+                throw new \Exception("Contract Agreement Section doesn't exist");
+
+            $contractAgreementSection = $contractAgreementSection->first();
+
+            $contractAgreementSection->update([
+                'section_description' => $request->section_description,
+                'content' => $request->content,
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error('error', [$th]);
+            return $contractAgreementSection->errorResponse($th->getMessage());
+        }
+
         return $this->validResponse($contractAgreementSection->toArray());
     }
 
